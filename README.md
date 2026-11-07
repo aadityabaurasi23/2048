@@ -1,6 +1,6 @@
-# 2048 — Curated Studio Edition (`v2.0.1`)
+# 2048 — Curated Studio Edition (`v2.0.2`)
 
-![Version](https://img.shields.io/badge/release-v2.0.1-0284c7?style=flat-square)
+![Version](https://img.shields.io/badge/release-v2.0.2-0284c7?style=flat-square)
 ![Tech](https://img.shields.io/badge/stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-f59e0b?style=flat-square)
 ![Dependencies](https://img.shields.io/badge/dependencies-zero-10b981?style=flat-square)
 
@@ -8,9 +8,12 @@ A richly customizable, studio-crafted edition of the classic **2048** exponentia
 
 ---
 
-## 🆕 What's New in `v2.0.1`
+## 🆕 Release Changelog (`v2.0.2`)
 
-`v2.0.1` upgrades the game from the `v1.x` Classic/Custom release into the full **Curated Studio Edition**:
+### `v2.0.2` — Clean App Release Pipeline Fix
+- **Fixed Failing GitHub Pages Check on Private Repositories:** Removed the `deploy-pages` job from `.github/workflows/release.yml` (GitHub Pages is unavailable on private repositories on GitHub Free, which caused a failing check even when app packaging and release succeeded). Every push now completes with **100% passing checks** and marks the new release as `Latest`.
+
+### `v2.0.1` — Curated Studio Edition Upgrade
 - **Symmetrical 3-Column Bento Workspace:** Re-engineered layout placing the 2048 game board dead-center on the screen, flanked by **Live Telemetry & Power-Ups** on the left and **Customization Studio & Run Tile Progression** on the right.
 - **Expanded to 10 Themes × Light & Dark Modes (20 Palettes):** Added **Sakura Blossom**, **Nordic Frost**, **Mocha Espresso**, and **Minimalist Ink**, each with bespoke Light and Dark palettes.
 - **4 Distinct Game Modes:** Added **⏱️ 2-Min Time Blitz**, **🧘 Zen Relax (No Lockout)**, and **🔥 Hardcore Purist** alongside **Classic Endless**, with independent saved states and Best Scores per `(mode, gridSize)`.
@@ -112,20 +115,20 @@ Open the **Player Hub** (`📊 Data`, `🏆 Badges`, or `📖 Guide`) at any tim
 
 ---
 
-## 🚀 Running Locally & App Releases (`v2.0.1`)
+## 🚀 Running Locally & App Releases (`v2.0.2`)
 
-### Option 1: Download Standalone Release (`v2.0.1`)
-From the **GitHub Releases** page (`v2.0.1`), you can download:
+### Option 1: Download Standalone Release (`v2.0.2`)
+From the **GitHub Releases** page (`v2.0.2`), you can download:
 - **`2048-standalone.html`** — A single self-contained HTML file with all CSS and JS embedded. Double-click to play offline anywhere.
-- **`2048-app-v2.0.1.zip` / `2048-app-v2.0.1.tar.gz`** — Complete web & source bundle.
+- **`2048-app-v2.0.2.zip` / `2048-app-v2.0.2.tar.gz`** — Complete web & source bundle.
 
 ### Option 2: Run from Source
 No installation, bundler, or local server is needed:
 1. Clone or download this repository.
 2. Open `index.html` directly in any modern browser.
 
-### Automated CI/CD Release Pipeline
-`.github/workflows/release.yml` automatically builds and publishes **`v2.0.1`** upon pushing to `main` (and increments `v2.0.x` on subsequent pushes, or uses any custom `v*` tag you push), attaching `2048-standalone.html`, `.zip`, and `.tar.gz` bundles and deploying to **GitHub Pages**.
+### Automated CI/CD App Release Pipeline
+`.github/workflows/release.yml` automatically packages and publishes a new **GitHub App Release** (`v2.0.2`, `v2.0.3`, …) whenever you push to `main` (or push a `v*` tag), attaching `2048-standalone.html`, `.zip`, and `.tar.gz` bundles with zero external hosting requirements.
 
 ---
 
@@ -135,9 +138,9 @@ No installation, bundler, or local server is needed:
 2048/
 ├── .github/
 │   └── workflows/
-│       └── release.yml  # Automated v2.0.1+ packaging, standalone HTML builder & Release CI
+│       └── release.yml  # Automated v2.0.2+ packaging, standalone HTML builder & GitHub Release CI
 ├── index.html           # 3-column symmetrical Bento workspace, SVG patterns & Player Hub modal
 ├── style.css            # 20 theme/mode palettes, tile skins/shapes, particle FX & responsive layout
 ├── script.js            # Core engine, 4 modes, power-ups, AI heuristic, analytics, badges & synth
-└── README.md            # Documentation, v2.0.1 release notes & strategy overview
+└── README.md            # Documentation, v2.0.2 changelog & strategy overview
 ```
