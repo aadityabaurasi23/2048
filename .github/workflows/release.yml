@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Optional version tag to create a GitHub Release (e.g., v1.0.0)"
+        description: "Version tag for the GitHub Release (e.g., v1.0.0)"
         required: false
-        default: ""
+        default: "v1.0.0"
 
 permissions:
   contents: write
@@ -29,27 +29,22 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.meta.outputs.version }}
-      is_release: ${{ steps.meta.outputs.is_release }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Determine Version & Release Mode
+      - name: Determine Version Tag
         id: meta
         shell: bash
         run: |
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             VERSION="${GITHUB_REF#refs/tags/}"
-            IS_RELEASE="true"
           elif [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
             VERSION="${{ github.event.inputs.release_tag }}"
-            IS_RELEASE="true"
           else
             VERSION="v1.0.${{ github.run_number }}"
-            IS_RELEASE="false"
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "is_release=${IS_RELEASE}" >> "$GITHUB_OUTPUT"
 
       - name: Assemble Distribution & Single-File Standalone App
         shell: bash
@@ -92,23 +87,9 @@ jobs:
         with:
           path: ./dist
 
-  deploy-pages:
-    name: Live App Deployment (GitHub Pages)
-    needs: package-app
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
   create-github-release:
     name: Publish GitHub App Release
     needs: package-app
-    if: needs.package-app.outputs.is_release == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -130,3 +111,19 @@ jobs:
             release-assets/2048-app-${{ needs.package-app.outputs.version }}.zip
             release-assets/2048-app-${{ needs.package-app.outputs.version }}.tar.gz
             release-assets/2048-standalone.html
+
+  deploy-pages:
+    name: Live App Deployment (GitHub Pages)
+    needs: package-app
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          enablement: true
