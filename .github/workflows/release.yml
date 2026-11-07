@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Version tag for the GitHub Release (e.g., v2.1.0)"
+        description: "Version tag for the GitHub Release (e.g., v2.3.0)"
         required: false
-        default: "v2.1.0"
+        default: "v2.3.0"
 
 permissions:
   contents: write
@@ -33,6 +33,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Determine Version Tag
         id: meta
         shell: bash
@@ -42,41 +47,26 @@ jobs:
           elif [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
             VERSION="${{ github.event.inputs.release_tag }}"
           else
-            LATEST_V21=$(git tag -l "v2.1.*" --sort=-v:refname | head -n 1)
-            if [[ -z "$LATEST_V21" ]]; then
-              VERSION="v2.1.0"
+            LATEST_V23=$(git tag -l "v2.3.*" --sort=-v:refname | head -n 1)
+            if [[ -z "$LATEST_V23" ]]; then
+              VERSION="v2.3.0"
             else
-              PATCH="${LATEST_V21##*.}"
-              VERSION="v2.1.$((PATCH + 1))"
+              PATCH="${LATEST_V23##*.}"
+              VERSION="v2.3.$((PATCH + 1))"
             fi
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
-      - name: Assemble Distribution & Single-File Standalone App
+      - name: Install Dependencies, Verify & Build Standalone App
         shell: bash
         run: |
-          mkdir -p dist release-assets
+          npm install --no-audit --no-fund
+          npm run verify
+          npm run build
 
-          # Copy clean web app files for archive bundles
-          cp index.html style.css script.js README.md dist/
+          mkdir -p dist
+          cp -r index.html style.css wallpaper.js script.js package.json server.js scripts README.md dist/
 
-          # Build a self-contained single-file HTML app (2048-standalone.html)
-          python3 - << 'EOF'
-          with open("index.html", "r", encoding="utf-8") as f:
-              html = f.read()
-          with open("style.css", "r", encoding="utf-8") as f:
-              css = f.read()
-          with open("script.js", "r", encoding="utf-8") as f:
-              js = f.read()
-
-          html = html.replace('<link rel="stylesheet" href="style.css" />', f"<style>\n{css}\n</style>")
-          html = html.replace('<script src="script.js"></script>', f"<script>\n{js}\n</script>")
-
-          with open("release-assets/2048-standalone.html", "w", encoding="utf-8") as f:
-              f.write(html)
-          EOF
-
-          # Create downloadable zip and tar.gz archives
           cd dist
           zip -r "../release-assets/2048-app-${{ steps.meta.outputs.version }}.zip" .
           tar -czf "../release-assets/2048-app-${{ steps.meta.outputs.version }}.tar.gz" .
@@ -113,21 +103,19 @@ jobs:
           body: |
             ## ✨ 2048 — Curated Studio Edition (`${{ needs.package-app.outputs.version }}`)
 
-            ### 🎨 What's New in `v2.1.0` — Minimalist Front Stage & Side-Tab Drawer
-            - **Uncluttered Centered Stage:** Refined the front screen to showcase only the essentials — Hero Score Header, sleek Command Dock with integrated milestone progress bar, `464px × 464px` 2048 board, and slim live Telemetry Footer.
-            - **Docked Side Tabs & Slide-Out Glass Drawer:** Moved secondary tools off the main stage into right-edge side tabs (**🏆 Achievements**, **🎨 Studio**, **📊 Analytics**, **📖 Guide**) that glide open smoothly without interrupting active gameplay.
-            - **Upgraded Achievements Tab:** Added live `0/12` tab counter, new-badge notification dot, completion progress bar, and `All` / `Unlocked` / `Locked` filter chips.
-            - **Release-Only Pipeline (No Deployment):** Cleanly builds and publishes downloadable release bundles without any GitHub Pages deployment job.
+            ### 🌟 What's New in `v2.3.0` — 24K Gold Classic Dark Mode & First-Run Translucent Welcome Showcase
+            - **Obsidian & 24K Imperial Gold Dark Mode for Classic Warm:** Redesigned *Classic Warm — Dark Mode* (both board/tiles and the live *Warm Spiral Doodles* wallpaper) into a warm gilded **Obsidian, Antique Bronze & 24K Imperial Gold** palette so it feels authentically connected to Classic 2048 and completely distinct from *Ocean Blue*.
+            - **First-Run Translucent Welcome Showcase (`▶ Let's Start`):** New players are greeted by a frosted-glass welcome card suspended over the live animated game board and 60 FPS wallpaper, featuring a floating `2·0·4·8` crest, live starter-vibe & Dark/Light preview controls, and a shimmering **`▶ Let's Start`** button (`Enter` / `Space` supported).
+            - **Permanent Forever-Once Persistence:** Stores completion in **both** a long-lived browser cookie (`Expires=2099`) and `localStorage`, ensuring the welcome screen never interrupts returning players again unless browser cookies or cache/site-data are cleared (with an optional *View Welcome Showcase Screen* button in `📖 Guide`).
 
-            ### 🚀 Core Studio Features
-            - **10 Themes × Light & Dark Modes (20 Palettes):** *Classic Warm*, *Ocean Blue*, *Cyberpunk Neon*, *Forest Emerald*, *Crimson Sunset*, *Royal Amethyst*, *Sakura Blossom*, *Nordic Frost*, *Mocha Espresso*, and *Minimalist Ink*.
-            - **4 Playable Game Modes:** *Classic Endless*, *⏱️ 2-Min Time Blitz*, *🧘 Zen Relax*, and *🔥 Hardcore Purist*.
-            - **Tactical Power-Ups & AI:** *🔀 Shuffle*, *⚡ Zap Low*, milestone bonus charges, *🔥 Merge Streak*, *💡 Smart Hint*, and *🤖 Auto-Play AI*.
-            - **Visual Studio & Analytics:** 4 Tile Skins (*Numbers*, *Powers 2ⁿ*, *Roman*, *Cosmic*), 4 SVG Backdrops (*Spirals & Doodles*, *Constellations*, *Topo Waves*, *Clean Gradient*), 3 Tile Shapes, Run Tile Vault, Lifetime Forge Matrix, Match History, and JSON Export/Import.
+            ### 🚀 Core Studio Highlights
+            - **10 Themes × Connected 60 FPS Live Wallpapers (20 Palettes):** Two-way Theme ↔ Wallpaper sync (*Forest Emerald* ↔ *🌿 Green Doodle Grove*, *Classic Warm* ↔ *🌀 Warm Spiral Doodles*, *Sakura Blossom* ↔ *🌸 Sakura Petal Drift*, etc.) plus **Mix & Match Mode** inside the AngularJS Wallpaper Studio.
+            - **Curated Minimalist Stage & 5 Side Tabs:** *🏆 Achievements (14)*, *🖼️ Wallpaper*, *⚙️ Settings*, *📊 Analytics & Vault*, and *📖 Strategy Guide*.
+            - **Node.js Server & Offline Standalone Build:** Strict release-only CI pipeline (zero deployment jobs).
 
             ### 📦 Download Options
-            - **`2048-standalone.html`** — Single-file offline app (open directly in any browser, no extraction required).
-            - **`2048-app-${{ needs.package-app.outputs.version }}.zip` / `.tar.gz`** — Full source & web distribution archive.
+            - **`2048-standalone.html`** — Single-file offline app with CSS, AngularJS, Live Wallpaper Engine, and 2048 Engine embedded.
+            - **`2048-app-${{ needs.package-app.outputs.version }}.zip` / `.tar.gz`** — Complete web & Node.js project archive.
           files: |
             release-assets/2048-app-${{ needs.package-app.outputs.version }}.zip
             release-assets/2048-app-${{ needs.package-app.outputs.version }}.tar.gz

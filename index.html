@@ -1,75 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="classic" data-mode="light" data-backdrop="spirals" data-shape="rounded">
+<html lang="en" data-theme="classic" data-mode="light" data-wallpaper="classic" data-shape="rounded">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="2048 Curated Studio Edition — Minimalist centered puzzle stage with slide-out side tabs for Achievements, Customization Studio, Lifetime Analytics, and Strategy Guide." />
+  <meta name="description" content="2048 Curated Studio Edition — Minimalist puzzle stage with interactive 60 FPS theme-connected Live Wallpapers, AngularJS Wallpaper Studio, Achievements, and Lifetime Analytics." />
   <title>2048 — Curated Studio Edition</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Theme-Adaptive SVG Backdrop Canvas (Spirals, Constellations, Zen Waves, or Minimal) -->
-  <div class="doodle-backdrop" id="doodle-backdrop" aria-hidden="true">
-    <svg class="doodle-pattern" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-      <defs>
-        <!-- Pattern 1: Spirals & Doodles -->
-        <pattern id="pattern-spirals" width="260" height="260" patternUnits="userSpaceOnUse">
-          <path class="doodle-stroke" d="M 65 65 m 0 0 a 6 6 0 1 0 12 0 a 12 12 0 1 0 -24 0 a 18 18 0 1 0 36 0 a 24 24 0 1 0 -48 0 a 30 30 0 1 0 60 0" />
-          <path class="doodle-stroke" d="M 195 195 m 0 0 a 5 5 0 1 1 -10 0 a 11 11 0 1 1 22 0 a 17 17 0 1 1 -34 0 a 23 23 0 1 1 46 0" />
-          <rect class="doodle-stroke" x="170" y="28" width="44" height="44" rx="10" transform="rotate(14 192 50)" />
-          <rect class="doodle-stroke-dashed" x="178" y="36" width="28" height="28" rx="6" transform="rotate(14 192 50)" />
-          <rect class="doodle-stroke" x="26" y="168" width="48" height="48" rx="11" transform="rotate(-12 50 192)" />
-          <path class="doodle-stroke" d="M 110 130 Q 125 112, 140 130 T 170 130" />
-          <path class="doodle-stroke" d="M 18 118 C 32 102, 52 134, 66 118" />
-          <path class="doodle-stroke" d="M 122 225 C 135 210, 148 240, 162 225" />
-          <path class="doodle-stroke" d="M 130 42 L 130 58 M 122 50 L 138 50" />
-          <path class="doodle-stroke" d="M 232 118 L 232 132 M 225 125 L 239 125" />
-          <path class="doodle-stroke" d="M 96 172 L 96 184 M 90 178 L 102 178" />
-          <circle class="doodle-stroke-dashed" cx="130" cy="130" r="22" />
-          <circle class="doodle-fill" cx="115" cy="88" r="3.5" />
-          <circle class="doodle-fill" cx="225" cy="78" r="4" />
-          <circle class="doodle-fill" cx="78" cy="232" r="3.5" />
-          <circle class="doodle-fill" cx="152" cy="172" r="3" />
-          <text class="doodle-text" x="184" y="56" transform="rotate(14 192 50)">2</text>
-          <text class="doodle-text" x="43" y="198" transform="rotate(-12 50 192)">4</text>
-          <text class="doodle-text-lg" x="16" y="34">2048</text>
-        </pattern>
+  <!-- Interactive 60 FPS Theme-Connected Live Wallpaper Layer -->
+  <div class="wallpaper-stage" aria-hidden="true">
+    <canvas id="live-wallpaper-canvas" class="live-wallpaper-canvas"></canvas>
 
-        <!-- Pattern 2: Geometric Constellations & Astrolabe -->
-        <pattern id="pattern-constellations" width="240" height="240" patternUnits="userSpaceOnUse">
-          <polyline class="doodle-stroke" points="32,42 86,28 118,74 68,108 32,42" />
-          <polyline class="doodle-stroke" points="154,142 204,124 218,182 168,208 134,178" />
-          <line class="doodle-stroke-dashed" x1="118" y1="74" x2="154" y2="142" />
-          <circle class="doodle-stroke-dashed" cx="185" cy="55" r="28" />
-          <circle class="doodle-stroke" cx="185" cy="55" r="12" />
-          <path class="doodle-stroke" d="M 55 175 L 63 192 L 80 200 L 63 208 L 55 225 L 47 208 L 30 200 L 47 192 Z" />
-          <circle class="doodle-fill" cx="32" cy="42" r="4" />
-          <circle class="doodle-fill" cx="86" cy="28" r="3.5" />
-          <circle class="doodle-fill" cx="118" cy="74" r="4.5" />
-          <circle class="doodle-fill" cx="68" cy="108" r="3.5" />
-          <circle class="doodle-fill" cx="154" cy="142" r="4" />
-          <circle class="doodle-fill" cx="204" cy="124" r="3.5" />
-          <circle class="doodle-fill" cx="218" cy="182" r="4" />
-          <circle class="doodle-fill" cx="168" cy="208" r="3.5" />
-          <circle class="doodle-fill" cx="185" cy="55" r="3" />
-        </pattern>
-
-        <!-- Pattern 3: Zen Topographic Waves -->
-        <pattern id="pattern-waves" width="200" height="200" patternUnits="userSpaceOnUse">
-          <path class="doodle-stroke" d="M 0 100 Q 50 55, 100 100 T 200 100" />
-          <path class="doodle-stroke-dashed" d="M 0 122 Q 50 77, 100 122 T 200 122" />
-          <path class="doodle-stroke" d="M 0 40 Q 50 -5, 100 40 T 200 40" />
-          <path class="doodle-stroke" d="M 0 168 Q 50 123, 100 168 T 200 168" />
-          <circle class="doodle-stroke" cx="100" cy="100" r="18" />
-          <circle class="doodle-stroke-dashed" cx="100" cy="100" r="32" />
-          <circle class="doodle-fill" cx="50" cy="22" r="3.5" />
-          <circle class="doodle-fill" cx="150" cy="148" r="3.5" />
-        </pattern>
-      </defs>
-      <rect id="backdrop-pattern-rect" width="100%" height="100%" fill="url(#pattern-spirals)" />
-    </svg>
-
-    <!-- Ambient Rotating Corner Spirals -->
+    <!-- Subtle Ambient Corner Spirals -->
     <svg class="corner-spiral spiral-tl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
       <path d="M100,100 m0,0 a8,8 0 1,0 16,0 a16,16 0 1,0 -32,0 a24,24 0 1,0 48,0 a32,32 0 1,0 -64,0 a40,40 0 1,0 80,0 a48,48 0 1,0 -96,0 a56,56 0 1,0 112,0 a64,64 0 1,0 -128,0 a72,72 0 1,0 144,0" fill="none" />
     </svg>
@@ -107,9 +50,17 @@
             <span class="score-value" id="best-score">0</span>
           </div>
         </div>
-        <button id="mode-btn" class="btn btn-mode-wide" title="Toggle Dark / Light Mode (L)">
-          🌙 Dark Mode
-        </button>
+        <div class="header-quick-row">
+          <button id="mode-btn" class="btn btn-mode-wide" title="Toggle Dark / Light Mode (L)">
+            🌙 Dark Mode
+          </button>
+          <button id="quick-wallpaper-btn" class="btn btn-icon-only" title="Live Wallpaper Studio (V)" aria-label="Open Live Wallpaper Studio">
+            🖼️
+          </button>
+          <button id="quick-settings-btn" class="btn btn-icon-only" title="Theme & Game Settings (O)" aria-label="Open Settings">
+            ⚙️
+          </button>
+        </div>
       </div>
     </header>
 
@@ -136,6 +87,9 @@
         </button>
         <button id="sound-btn" class="btn btn-icon-only active" title="Toggle Sound Effects (M)" aria-pressed="true">
           🔊
+        </button>
+        <button id="fullscreen-btn" class="btn btn-icon-only" title="Toggle Fullscreen (F)" aria-label="Toggle Fullscreen">
+          ⛶
         </button>
       </div>
 
@@ -204,13 +158,19 @@
     <button class="side-tab-btn" data-drawer-tab="badges" title="Achievements & Milestones (B)">
       <span class="side-tab-icon">🏆</span>
       <span class="side-tab-label">Achievements</span>
-      <span class="side-tab-badge" id="achievement-summary">0/12</span>
+      <span class="side-tab-badge" id="achievement-summary">0/14</span>
       <span class="side-tab-dot" id="badge-notify-dot" hidden></span>
     </button>
 
-    <button class="side-tab-btn" data-drawer-tab="studio" title="Theme & Customization Studio (O)">
-      <span class="side-tab-icon">🎨</span>
-      <span class="side-tab-label">Studio</span>
+    <button class="side-tab-btn" data-drawer-tab="wallpaper" title="Live Wallpaper Studio (V)">
+      <span class="side-tab-icon">🖼️</span>
+      <span class="side-tab-label">Wallpaper</span>
+      <span class="side-tab-badge" id="wallpaper-live-pill">LIVE</span>
+    </button>
+
+    <button class="side-tab-btn" data-drawer-tab="studio" title="Theme & Game Settings (O)">
+      <span class="side-tab-icon">⚙️</span>
+      <span class="side-tab-label">Settings</span>
     </button>
 
     <button class="side-tab-btn" data-drawer-tab="stats" title="Analytics, Tile Vault & History (G)">
@@ -228,13 +188,14 @@
   <div class="drawer-scrim" id="drawer-scrim" hidden></div>
 
   <!-- ========================================================================
-       SLIDE-OUT SIDE DRAWER (Achievements, Studio, Analytics & Guide)
+       SLIDE-OUT SIDE DRAWER (Achievements, Wallpaper, Settings, Data & Guide)
        ======================================================================== -->
   <aside class="side-drawer" id="side-drawer" aria-hidden="true" aria-label="Side Panel Drawer">
     <div class="drawer-header">
       <div class="drawer-nav-pills" role="tablist">
         <button class="drawer-pill active" data-drawer-tab="badges" role="tab" aria-selected="true">🏆 Badges</button>
-        <button class="drawer-pill" data-drawer-tab="studio" role="tab" aria-selected="false">🎨 Studio</button>
+        <button class="drawer-pill" data-drawer-tab="wallpaper" role="tab" aria-selected="false">🖼️ Wallpaper</button>
+        <button class="drawer-pill" data-drawer-tab="studio" role="tab" aria-selected="false">⚙️ Settings</button>
         <button class="drawer-pill" data-drawer-tab="stats" role="tab" aria-selected="false">📊 Data</button>
         <button class="drawer-pill" data-drawer-tab="guide" role="tab" aria-selected="false">📖 Guide</button>
       </div>
@@ -253,7 +214,7 @@
             <div class="ach-progress-fill" id="ach-progress-fill" style="width: 0%"></div>
           </div>
           <div class="ach-filter-row">
-            <button class="filter-chip active" data-ach-filter="all">All (12)</button>
+            <button class="filter-chip active" data-ach-filter="all">All (14)</button>
             <button class="filter-chip" data-ach-filter="unlocked">Unlocked</button>
             <button class="filter-chip" data-ach-filter="locked">Locked</button>
           </div>
@@ -262,10 +223,98 @@
         <div class="achievements-list" id="achievements-grid"></div>
       </section>
 
-      <!-- PANEL 2: CUSTOMIZATION STUDIO -->
+      <!-- PANEL 2: LIVE WALLPAPER STUDIO (Powered by AngularJS + 60 FPS Canvas) -->
+      <section class="drawer-panel" id="panel-wallpaper" role="tabpanel" hidden>
+        <div id="wallpaper-angular-mount" ng-controller="WallpaperStudioCtrl" ng-cloak data-ng-pending="true">
+          <div class="panel-hero-box">
+            <div class="panel-hero-row">
+              <h2 class="panel-title">Live Wallpaper Studio</h2>
+              <span class="panel-pill" ng-bind="snap.wallpaperId === 'minimal' ? 'Static' : (snap.animated ? 'Live 60 FPS' : 'Paused')">Live 60 FPS</span>
+            </div>
+            <p class="panel-desc">
+              Active: <strong ng-bind="snap.currentItem.icon + ' ' + snap.currentItem.name">🌀 Warm Spiral Doodles</strong>
+              · Paired Theme: <strong ng-bind="snap.currentItem.themeLabel">Classic Warm</strong>
+            </p>
+            <div class="wp-sync-bar">
+              <button type="button" class="btn btn-secondary btn-block" ng-class="{ active: snap.syncWithTheme }" ng-click="toggleSync()">
+                <span ng-bind="snap.syncWithTheme ? '🔗 Connected to Theme: ON (2-Way Sync)' : '🔓 Mix & Match Mode: Any Wallpaper / Theme'"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="ach-filter-row wp-cat-row">
+            <button type="button" class="filter-chip" ng-class="{ active: categoryFilter === 'all' }" ng-click="setCategory('all')">All (11)</button>
+            <button type="button" class="filter-chip" ng-class="{ active: categoryFilter === 'doodles' }" ng-click="setCategory('doodles')">Doodles</button>
+            <button type="button" class="filter-chip" ng-class="{ active: categoryFilter === 'nature' }" ng-click="setCategory('nature')">Nature</button>
+            <button type="button" class="filter-chip" ng-class="{ active: categoryFilter === 'cosmic' }" ng-click="setCategory('cosmic')">Cosmic</button>
+          </div>
+
+          <div class="wp-gallery-grid">
+            <button
+              type="button"
+              class="wp-card"
+              ng-repeat="item in filteredCatalog() track by item.id"
+              ng-class="{ active: snap.wallpaperId === item.id }"
+              ng-click="pickWallpaper(item)"
+            >
+              <div class="wp-swatch" ng-style="getSwatchStyle(item)">
+                <span class="wp-swatch-icon" ng-bind="item.icon"></span>
+                <span class="wp-active-tag" ng-if="snap.wallpaperId === item.id">✓ Active</span>
+              </div>
+              <div class="wp-card-meta">
+                <div class="wp-card-name" ng-bind="item.name"></div>
+                <div class="wp-card-theme" ng-bind="item.themeId ? ('Theme: ' + item.themeLabel) : 'Battery Saver'"></div>
+              </div>
+            </button>
+          </div>
+
+          <h3 class="drawer-subhead">Live Motion &amp; Interactivity</h3>
+          <div class="studio-form">
+            <div class="setting-row-2">
+              <button type="button" class="btn btn-secondary btn-sm" ng-class="{ active: snap.animated }" ng-click="toggleAnimated()">
+                <span ng-bind="snap.animated ? '⏸ Motion: ON' : '▶ Motion: Paused'"></span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" ng-class="{ active: snap.interactiveRipples }" ng-click="toggleRipples()">
+                <span ng-bind="snap.interactiveRipples ? '🌊 Ripples: ON' : '🌊 Ripples: OFF'"></span>
+              </button>
+            </div>
+
+            <div class="setting-field">
+              <label class="setting-label">
+                Wallpaper Motion Speed (<span ng-bind="snap.speed + '×'">1×</span>)
+              </label>
+              <input
+                type="range"
+                min="0.25"
+                max="2"
+                step="0.25"
+                class="studio-range"
+                ng-model="snap.speed"
+                ng-change="changeSpeed()"
+              />
+            </div>
+
+            <div class="setting-field">
+              <label class="setting-label">Doodle &amp; Particle Density</label>
+              <div class="ach-filter-row">
+                <button type="button" class="filter-chip" ng-class="{ active: snap.density === 'subtle' }" ng-click="selectDensity('subtle')">Subtle</button>
+                <button type="button" class="filter-chip" ng-class="{ active: snap.density === 'balanced' }" ng-click="selectDensity('balanced')">Balanced</button>
+                <button type="button" class="filter-chip" ng-class="{ active: snap.density === 'lush' }" ng-click="selectDensity('lush')">Lush</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 3: SETTINGS & THEME CUSTOMIZATION STUDIO -->
       <section class="drawer-panel" id="panel-studio" role="tabpanel" hidden>
         <div class="panel-hero-box">
-          <h2 class="panel-title">Customization Studio</h2>
+          <div class="panel-hero-row">
+            <h2 class="panel-title">Settings &amp; Theme Studio</h2>
+            <button id="settings-mode-btn" class="btn btn-secondary btn-sm" type="button">
+              🌙 Dark Mode
+            </button>
+          </div>
           <p class="panel-desc" id="mode-desc">
             <strong>Classic Endless:</strong> Merge matching tiles to reach 2048 and push your high score!
           </p>
@@ -273,28 +322,36 @@
 
         <div class="studio-form">
           <div class="setting-field">
+            <label class="setting-label" for="theme-select">Color Theme (Connected with Wallpaper)</label>
+            <select id="theme-select" class="setting-select">
+              <option value="classic">🌀 Classic Warm (Amber Doodles)</option>
+              <option value="emerald">🌿 Forest Emerald (Green Doodle Grove)</option>
+              <option value="ocean">🌊 Ocean Blue (Abyssal Currents)</option>
+              <option value="cyberpunk">⚡ Cyberpunk Neon (Synthwave Grid)</option>
+              <option value="sunset">🔥 Crimson Sunset (Solar Embers)</option>
+              <option value="royal">✨ Royal Amethyst (Constellations)</option>
+              <option value="sakura">🌸 Sakura Blossom (Petal Drift)</option>
+              <option value="nordic">❄️ Nordic Frost (Aurora Borealis)</option>
+              <option value="coffee">☕ Mocha Espresso (Café Doodles)</option>
+              <option value="monochrome">✒️ Minimalist Ink (Sumi Geometry)</option>
+            </select>
+            <!-- Quick 10-Theme Color Swatches -->
+            <div class="theme-swatch-row" id="theme-swatch-row" aria-label="Quick Theme Swatches"></div>
+          </div>
+
+          <div class="setting-field">
+            <button id="jump-wallpaper-btn" type="button" class="btn btn-secondary btn-block">
+              🖼️ Customize Live Wallpaper &amp; Motion →
+            </button>
+          </div>
+
+          <div class="setting-field">
             <label class="setting-label" for="gamemode-select">Game Mode</label>
             <select id="gamemode-select" class="setting-select">
               <option value="classic" selected>Classic Endless</option>
               <option value="blitz">⏱️ 2-Min Time Blitz</option>
               <option value="zen">🧘 Zen Relax (No Lockout)</option>
               <option value="hardcore">🔥 Hardcore Purist</option>
-            </select>
-          </div>
-
-          <div class="setting-field">
-            <label class="setting-label" for="theme-select">Color Palette (10 Themes)</label>
-            <select id="theme-select" class="setting-select">
-              <option value="classic">Classic Warm</option>
-              <option value="ocean">Ocean Blue</option>
-              <option value="cyberpunk">Cyberpunk Neon</option>
-              <option value="emerald">Forest Emerald</option>
-              <option value="sunset">Crimson Sunset</option>
-              <option value="royal">Royal Amethyst</option>
-              <option value="sakura">Sakura Blossom</option>
-              <option value="nordic">Nordic Frost</option>
-              <option value="coffee">Mocha Espresso</option>
-              <option value="monochrome">Minimalist Ink</option>
             </select>
           </div>
 
@@ -320,16 +377,6 @@
             </div>
           </div>
 
-          <div class="setting-field">
-            <label class="setting-label" for="backdrop-select">Backdrop Art</label>
-            <select id="backdrop-select" class="setting-select">
-              <option value="spirals" selected>Spirals &amp; Doodles</option>
-              <option value="constellations">Star Constellations</option>
-              <option value="waves">Zen Topo Waves</option>
-              <option value="minimal">Clean Gradient</option>
-            </select>
-          </div>
-
           <div class="setting-row-2">
             <div class="setting-field">
               <label class="setting-label" for="shape-select">Tile Shape</label>
@@ -341,13 +388,20 @@
             </div>
 
             <div class="setting-field">
-              <label class="setting-label" for="speed-select">Motion Speed</label>
+              <label class="setting-label" for="speed-select">Slide Speed</label>
               <select id="speed-select" class="setting-select">
                 <option value="fast">Fast</option>
                 <option value="normal" selected>Normal</option>
                 <option value="relaxed">Relaxed</option>
               </select>
             </div>
+          </div>
+
+          <div class="setting-field">
+            <label class="setting-label" for="volume-slider">
+              Audio Synth Volume (<span id="volume-label">80%</span>)
+            </label>
+            <input type="range" id="volume-slider" class="studio-range" min="0" max="100" step="5" value="80" />
           </div>
 
           <div class="studio-toggles">
@@ -358,7 +412,7 @@
         </div>
       </section>
 
-      <!-- PANEL 3: ANALYTICS, RUN VAULT & HISTORY -->
+      <!-- PANEL 4: ANALYTICS, RUN VAULT & HISTORY -->
       <section class="drawer-panel" id="panel-stats" role="tabpanel" hidden>
         <div class="panel-hero-box">
           <div class="panel-hero-row">
@@ -404,7 +458,7 @@
         </div>
       </section>
 
-      <!-- PANEL 4: STRATEGY GUIDE & SHORTCUTS -->
+      <!-- PANEL 5: STRATEGY GUIDE & SHORTCUTS -->
       <section class="drawer-panel" id="panel-guide" role="tabpanel" hidden>
         <div class="tip-card">
           <div class="panel-hero-row">
@@ -418,9 +472,9 @@
 
         <div class="guide-stack">
           <div class="guide-box">
-            <h3>About 2048 — Studio Edition (v2.1.0)</h3>
+            <h3>About 2048 — Studio Edition (v2.3.0)</h3>
             <p>
-              Slide tiles across the grid using arrow keys, WASD, or touch swipes. Matching tiles fuse into the next power of two (<code>2¹ → 2¹¹</code>), adding each merged value to your score.
+              Slide tiles across the grid using arrow keys, WASD, or touch swipes. Matching tiles fuse into the next power of two (<code>2¹ → 2¹¹</code>), emitting ambient shockwaves onto your theme-connected 60 FPS Live Wallpaper.
             </p>
           </div>
 
@@ -438,24 +492,93 @@
             <div class="shortcut-list">
               <div><kbd>WASD</kbd> / <kbd>Arrows</kbd> <span>Slide Tiles</span></div>
               <div><kbd>L</kbd> <span>Dark / Light Mode</span></div>
-              <div><kbd>T</kbd> <span>Cycle Color Theme</span></div>
+              <div><kbd>T</kbd> <span>Cycle Theme &amp; Wallpaper</span></div>
+              <div><kbd>V</kbd> / <kbd>O</kbd> <span>Wallpaper / Settings</span></div>
+              <div><kbd>B</kbd> / <kbd>G</kbd> / <kbd>?</kbd> <span>Badges / Stats / Guide</span></div>
               <div><kbd>Z</kbd> / <kbd>U</kbd> <span>Undo Last Move</span></div>
-              <div><kbd>H</kbd> <span>Show Best Move Hint</span></div>
+              <div><kbd>H</kbd> / <kbd>P</kbd> <span>Hint / Auto-Play AI</span></div>
               <div><kbd>X</kbd> / <kbd>C</kbd> <span>Shuffle / Zap Tile</span></div>
-              <div><kbd>P</kbd> <span>Toggle Auto-Play AI</span></div>
-              <div><kbd>B</kbd> / <kbd>O</kbd> / <kbd>G</kbd> <span>Badges / Studio / Stats</span></div>
-              <div><kbd>?</kbd> / <kbd>Esc</kbd> <span>Guide / Close Drawer</span></div>
-              <div><kbd>R</kbd> <span>Start New Game</span></div>
+              <div><kbd>F</kbd> / <kbd>M</kbd> / <kbd>R</kbd> <span>Fullscreen / Mute / New</span></div>
             </div>
           </div>
+
+          <button id="replay-welcome-btn" type="button" class="btn btn-secondary btn-block">
+            ✨ View Welcome Showcase Screen
+          </button>
         </div>
       </section>
     </div>
   </aside>
 
+  <!-- ========================================================================
+       FIRST-RUN TRANSLUCENT WELCOME SHOWCASE OVERLAY (Shown Once Forever)
+       ======================================================================== -->
+  <div class="welcome-overlay" id="welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="welcome-title" hidden>
+    <div class="welcome-card">
+      <div class="welcome-edition-pill">✨ Curated Studio Edition · v2.3.0</div>
+
+      <div class="welcome-crest" aria-hidden="true">
+        <span class="crest-tile ct-2">2</span>
+        <span class="crest-tile ct-0">0</span>
+        <span class="crest-tile ct-4">4</span>
+        <span class="crest-tile ct-8">8</span>
+      </div>
+
+      <h2 class="welcome-title" id="welcome-title">Welcome to 2048</h2>
+      <p class="welcome-lead">
+        Slide &amp; fuse matching numbers across a living canvas — complete with 20 Light &amp; Dark palettes, 60 FPS live wallpapers, power-ups, and lifetime telemetry.
+      </p>
+
+      <div class="welcome-vibe-box">
+        <div class="welcome-vibe-head">
+          <span>🎨 Preview Your Starting Vibe</span>
+          <button type="button" class="welcome-mode-chip" id="welcome-mode-btn">🌙 Dark Mode</button>
+        </div>
+        <div class="welcome-vibe-pills">
+          <button type="button" class="vibe-pill active" data-welcome-theme="classic">
+            <span class="vibe-icon">🌀</span>
+            <span>Classic</span>
+          </button>
+          <button type="button" class="vibe-pill" data-welcome-theme="emerald">
+            <span class="vibe-icon">🌿</span>
+            <span>Emerald</span>
+          </button>
+          <button type="button" class="vibe-pill" data-welcome-theme="ocean">
+            <span class="vibe-icon">🌊</span>
+            <span>Ocean</span>
+          </button>
+          <button type="button" class="vibe-pill" data-welcome-theme="cyberpunk">
+            <span class="vibe-icon">⚡</span>
+            <span>Cyber</span>
+          </button>
+          <button type="button" class="vibe-pill" data-welcome-theme="sakura">
+            <span class="vibe-icon">🌸</span>
+            <span>Sakura</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="welcome-features">
+        <span class="welcome-feat-chip">⌨️ Arrows · WASD · Swipe</span>
+        <span class="welcome-feat-chip">🖼️ 10 Live Wallpapers</span>
+        <span class="welcome-feat-chip">🏆 14 Achievements</span>
+      </div>
+
+      <button type="button" class="btn-lets-start" id="welcome-start-btn">
+        <span>▶</span>
+        <span>Let's Start</span>
+      </button>
+
+      <div class="welcome-hint-note">Press <kbd>Enter</kbd> or click <strong>Let's Start</strong> to play</div>
+    </div>
+  </div>
+
   <!-- Achievement & Action Toast Container -->
   <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
+  <!-- AngularJS Reactive UI + Live Wallpaper Canvas Engine + Core 2048 Engine -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <script src="wallpaper.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

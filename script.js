@@ -2,14 +2,17 @@
   const STORAGE_PREFIX = "custom2048_";
   const STORAGE_KEY_SETTINGS = `${STORAGE_PREFIX}settings_v2`;
   const STORAGE_KEY_ANALYTICS = `${STORAGE_PREFIX}analytics_v2`;
+  const STORAGE_KEY_WELCOME = `${STORAGE_PREFIX}welcomed_forever`;
+  const STORAGE_KEY_WELCOME_MODE = `${STORAGE_PREFIX}welcomed_mode`;
+  const WELCOME_COOKIE_NAME = "custom2048_welcomed";
   const MAX_UNDO_HISTORY = 30;
   const BLITZ_DURATION_SEC = 120;
 
   const THEMES = [
     "classic",
+    "emerald",
     "ocean",
     "cyberpunk",
-    "emerald",
     "sunset",
     "royal",
     "sakura",
@@ -17,6 +20,19 @@
     "coffee",
     "monochrome",
   ];
+
+  const THEME_SWATCHES = {
+    classic: { label: "Classic Warm", color: "linear-gradient(135deg, #edc22e, #8f7a66)" },
+    emerald: { label: "Forest Emerald", color: "linear-gradient(135deg, #34d399, #059669)" },
+    ocean: { label: "Ocean Blue", color: "linear-gradient(135deg, #38bdf8, #0284c7)" },
+    cyberpunk: { label: "Cyberpunk Neon", color: "linear-gradient(135deg, #e879f9, #06b6d4)" },
+    sunset: { label: "Crimson Sunset", color: "linear-gradient(135deg, #fb923c, #e11d48)" },
+    royal: { label: "Royal Amethyst", color: "linear-gradient(135deg, #a78bfa, #6d28d9)" },
+    sakura: { label: "Sakura Blossom", color: "linear-gradient(135deg, #f472b6, #db2777)" },
+    nordic: { label: "Nordic Frost", color: "linear-gradient(135deg, #88c0d0, #475569)" },
+    coffee: { label: "Mocha Espresso", color: "linear-gradient(135deg, #dda15e, #7f5539)" },
+    monochrome: { label: "Minimalist Ink", color: "linear-gradient(135deg, #a1a1aa, #18181b)" },
+  };
 
   const SPEEDS = {
     fast: 65,
@@ -80,7 +96,7 @@
     "Anchor your highest-value tile in one corner and keep that row full so it never gets pushed out.",
     "Pick 3 primary directions (e.g., Up, Left, Right) and avoid the 4th direction unless no other move exists.",
     "Arrange tiles in a descending snake chain (2048 → 1024 → 512 → 256) so merges cascade effortlessly.",
-    "Reaching 2048 requires at least 1,024 total two-equivalents — patience in keeping empty cells is key!",
+    "Press 'V' or click 🖼️ to open the Live Wallpaper Studio — each theme pairs with its own signature scene!",
     "Save your ⚡ Zap power-up for when a newly spawned 2 gets trapped beside your corner anchor.",
     "Consecutive merges build your 🔥 Streak — set up two pairs before triggering a double cascade.",
     "On the 3×3 Mini grid, only 9 cells exist (max theoretical tile is 1024). Every single slide counts!",
@@ -102,6 +118,8 @@
     { id: "blitz_runner", icon: "⏱️", title: "Chrono Sprinter", desc: "Score 3,000+ in 2-Min Time Blitz mode." },
     { id: "night_owl", icon: "🌙", title: "Night Owl", desc: "Switch to Dark Mode and play a move." },
     { id: "chameleon", icon: "🎨", title: "Palette Collector", desc: "Explore at least 5 different color themes." },
+    { id: "living_canvas", icon: "🖼️", title: "Living Canvas", desc: "Explore at least 3 different Live Wallpapers." },
+    { id: "ripple_master", icon: "🌊", title: "Resonant Shockwave", desc: "Trigger a 512+ merge ripple on a Live Wallpaper." },
   ];
 
   const VAULT_TIERS = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048];
@@ -111,7 +129,6 @@
   // DOM Elements
   // ==========================================================================
   const rootHtml = document.documentElement;
-  const backdropPatternRect = document.getElementById("backdrop-pattern-rect");
   const gridContainer = document.getElementById("grid-container");
   const tileContainer = document.getElementById("tile-container");
   const particleLayer = document.getElementById("particle-layer");
@@ -145,6 +162,11 @@
 
   // Front Dock Controls & Studio Selectors
   const modeBtn = document.getElementById("mode-btn");
+  const settingsModeBtn = document.getElementById("settings-mode-btn");
+  const quickWallpaperBtn = document.getElementById("quick-wallpaper-btn");
+  const quickSettingsBtn = document.getElementById("quick-settings-btn");
+  const jumpWallpaperBtn = document.getElementById("jump-wallpaper-btn");
+  const fullscreenBtn = document.getElementById("fullscreen-btn");
   const fxBtn = document.getElementById("fx-btn");
   const restartBtn = document.getElementById("restart-btn");
   const undoBtn = document.getElementById("undo-btn");
@@ -155,12 +177,14 @@
   const zapCountEl = document.getElementById("zap-count");
   const aiBtn = document.getElementById("ai-btn");
   const soundBtn = document.getElementById("sound-btn");
+  const volumeSlider = document.getElementById("volume-slider");
+  const volumeLabel = document.getElementById("volume-label");
 
   const gameModeSelect = document.getElementById("gamemode-select");
   const themeSelect = document.getElementById("theme-select");
+  const themeSwatchRow = document.getElementById("theme-swatch-row");
   const sizeSelect = document.getElementById("size-select");
   const skinSelect = document.getElementById("skin-select");
-  const backdropSelect = document.getElementById("backdrop-select");
   const shapeSelect = document.getElementById("shape-select");
   const speedSelect = document.getElementById("speed-select");
 
@@ -171,6 +195,7 @@
   const sideTabBtns = document.querySelectorAll(".side-tab-btn");
   const drawerPills = document.querySelectorAll(".drawer-pill");
   const panelBadges = document.getElementById("panel-badges");
+  const panelWallpaper = document.getElementById("panel-wallpaper");
   const panelStudio = document.getElementById("panel-studio");
   const panelStats = document.getElementById("panel-stats");
   const panelGuide = document.getElementById("panel-guide");
@@ -195,6 +220,11 @@
 
   const tipTextEl = document.getElementById("tip-text");
   const nextTipBtn = document.getElementById("next-tip-btn");
+  const replayWelcomeBtn = document.getElementById("replay-welcome-btn");
+  const welcomeOverlay = document.getElementById("welcome-overlay");
+  const welcomeStartBtn = document.getElementById("welcome-start-btn");
+  const welcomeModeBtn = document.getElementById("welcome-mode-btn");
+  const welcomeVibePills = document.querySelectorAll(".vibe-pill[data-welcome-theme]");
   const toastContainer = document.getElementById("toast-container");
 
   // ==========================================================================
@@ -205,15 +235,16 @@
   let currentTheme = "classic";
   let currentMode = "light";
   let currentSkin = "numbers";
-  let currentBackdrop = "spirals";
   let currentShape = "rounded";
   let currentSpeed = "normal";
   let soundEnabled = true;
+  let soundVolume = 80;
   let fxEnabled = true;
   let tipIndex = 0;
 
-  // Side Drawer UI State
+  // Side Drawer & First-Run Welcome UI State
   let isDrawerOpen = false;
+  let isWelcomeOpen = false;
   let activeDrawerTab = "badges";
   let currentAchFilter = "all";
 
@@ -260,6 +291,7 @@
       tileCounts: {},
       themesTried: ["classic"],
       usedDarkMode: false,
+      triggered512Ripple: false,
       unlockedBadges: [],
       recentGames: [],
     };
@@ -269,7 +301,7 @@
   // Web Audio Synthesizer
   // ==========================================================================
   function playSound(type, mergeValue = 4) {
-    if (!soundEnabled) return;
+    if (!soundEnabled || soundVolume <= 0) return;
     try {
       if (!audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -280,6 +312,7 @@
         audioCtx.resume();
       }
 
+      const volScale = Math.max(0.05, soundVolume / 100);
       const now = audioCtx.currentTime;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -290,7 +323,7 @@
         osc.type = "sine";
         osc.frequency.setValueAtTime(175, now);
         osc.frequency.exponentialRampToValueAtTime(118, now + 0.05);
-        gain.gain.setValueAtTime(0.055, now);
+        gain.gain.setValueAtTime(0.06 * volScale, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.055);
         osc.start(now);
         osc.stop(now + 0.06);
@@ -300,7 +333,7 @@
         osc.type = "triangle";
         osc.frequency.setValueAtTime(baseFreq, now);
         osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.35, now + 0.11);
-        gain.gain.setValueAtTime(0.11, now);
+        gain.gain.setValueAtTime(0.12 * volScale, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.125);
         osc.start(now);
         osc.stop(now + 0.13);
@@ -308,7 +341,7 @@
         osc.type = "sine";
         osc.frequency.setValueAtTime(320, now);
         osc.frequency.exponentialRampToValueAtTime(640, now + 0.14);
-        gain.gain.setValueAtTime(0.09, now);
+        gain.gain.setValueAtTime(0.1 * volScale, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
         osc.start(now);
         osc.stop(now + 0.16);
@@ -318,7 +351,7 @@
         osc.frequency.setValueAtTime(659.25, now + 0.08);
         osc.frequency.setValueAtTime(783.99, now + 0.16);
         osc.frequency.setValueAtTime(1046.5, now + 0.24);
-        gain.gain.setValueAtTime(0.13, now);
+        gain.gain.setValueAtTime(0.14 * volScale, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
         osc.start(now);
         osc.stop(now + 0.44);
@@ -335,9 +368,9 @@
     loadAnalytics();
     loadSettings();
 
+    buildThemeSwatches();
     applyTheme(currentTheme, false);
     applyMode(currentMode, false);
-    applyBackdrop(currentBackdrop, false);
     applyShape(currentShape, false);
     applySpeed(currentSpeed, false);
     applySkin(currentSkin, false);
@@ -345,6 +378,26 @@
     applyGridSizeDOM(gridSize);
     updateSoundUI();
     updateFxUI();
+
+    // Boot Live Wallpaper Engine & connect two-way Theme <-> Wallpaper sync
+    if (window.LiveWallpaperEngine) {
+      window.LiveWallpaperEngine.init();
+      window.LiveWallpaperEngine.onThemeOrModeChanged(currentTheme, currentMode);
+      window.LiveWallpaperEngine.subscribe((wpSnap, meta) => {
+        if (meta?.source === "user-wallpaper") {
+          if (meta.pairedThemeId && meta.pairedThemeId !== currentTheme) {
+            applyTheme(meta.pairedThemeId, true, { skipWallpaperNotify: true });
+            showToast(
+              `${meta.wallpaperItem.icon} ${meta.wallpaperItem.name} + ${meta.wallpaperItem.themeLabel} Theme!`
+            );
+          } else if (meta.wallpaperItem) {
+            showToast(`${meta.wallpaperItem.icon} Wallpaper: ${meta.wallpaperItem.name}`);
+          }
+        }
+        checkAchievements();
+      });
+    }
+
     updateAchievementSummaryUI();
     renderTip();
     renderDrawerContents();
@@ -359,6 +412,91 @@
     }
 
     bindEvents();
+
+    // Show First-Run Translucent Welcome Showcase if user has never started before
+    if (!hasCompletedWelcome()) {
+      openWelcomeScreen();
+    }
+  }
+
+  function hasWelcomeCookie() {
+    try {
+      return document.cookie
+        .split(";")
+        .some((c) => c.trim().startsWith(`${WELCOME_COOKIE_NAME}=1`));
+    } catch {
+      return false;
+    }
+  }
+
+  function hasCompletedWelcome() {
+    try {
+      const lsVal = localStorage.getItem(STORAGE_KEY_WELCOME) === "1";
+      const mode = localStorage.getItem(STORAGE_KEY_WELCOME_MODE);
+      if (mode === "cookie+ls") {
+        return lsVal && hasWelcomeCookie();
+      }
+      return lsVal || hasWelcomeCookie();
+    } catch {
+      return hasWelcomeCookie();
+    }
+  }
+
+  function markWelcomeCompleted() {
+    let cookieSaved = false;
+    try {
+      document.cookie = `${WELCOME_COOKIE_NAME}=1; expires=Fri, 31 Dec 2099 23:59:59 GMT; max-age=315360000; path=/; SameSite=Lax`;
+      cookieSaved = hasWelcomeCookie();
+    } catch {
+      cookieSaved = false;
+    }
+
+    try {
+      localStorage.setItem(STORAGE_KEY_WELCOME, "1");
+      localStorage.setItem(STORAGE_KEY_WELCOME_MODE, cookieSaved ? "cookie+ls" : "ls");
+    } catch {
+      // Ignore storage quota errors
+    }
+  }
+
+  function syncWelcomeUI() {
+    if (welcomeModeBtn) {
+      welcomeModeBtn.textContent = currentMode === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+    }
+    welcomeVibePills.forEach((pill) => {
+      pill.classList.toggle("active", pill.dataset.welcomeTheme === currentTheme);
+    });
+  }
+
+  function openWelcomeScreen() {
+    if (!welcomeOverlay) return;
+    if (isDrawerOpen) closeDrawer();
+    isWelcomeOpen = true;
+    syncWelcomeUI();
+    welcomeOverlay.classList.remove("closing");
+    welcomeOverlay.hidden = false;
+    requestAnimationFrame(() => {
+      welcomeStartBtn?.focus();
+    });
+  }
+
+  function dismissWelcomeScreen() {
+    if (!welcomeOverlay || !isWelcomeOpen) return;
+    isWelcomeOpen = false;
+    markWelcomeCompleted();
+    playSound("win");
+
+    if (window.LiveWallpaperEngine) {
+      window.LiveWallpaperEngine.triggerMergeRipple(2048);
+    }
+
+    welcomeOverlay.classList.add("closing");
+    setTimeout(() => {
+      if (!isWelcomeOpen) {
+        welcomeOverlay.hidden = true;
+        welcomeOverlay.classList.remove("closing");
+      }
+    }, 340);
   }
 
   function loadSettings() {
@@ -377,10 +515,10 @@
       if (parsed.gameMode && GAME_MODES[parsed.gameMode]) gameMode = parsed.gameMode;
       if ([3, 4, 5, 6].includes(Number(parsed.gridSize))) gridSize = Number(parsed.gridSize);
       if (["numbers", "exponents", "roman", "cosmic"].includes(parsed.skin)) currentSkin = parsed.skin;
-      if (["spirals", "constellations", "waves", "minimal"].includes(parsed.backdrop)) currentBackdrop = parsed.backdrop;
       if (["rounded", "sharp", "pill"].includes(parsed.shape)) currentShape = parsed.shape;
       if (parsed.speed && SPEEDS[parsed.speed]) currentSpeed = parsed.speed;
       if (typeof parsed.soundEnabled === "boolean") soundEnabled = parsed.soundEnabled;
+      if (typeof parsed.soundVolume === "number") soundVolume = Math.min(100, Math.max(0, parsed.soundVolume));
       if (typeof parsed.fxEnabled === "boolean") fxEnabled = parsed.fxEnabled;
     } catch {
       // Fall back to defaults
@@ -397,10 +535,10 @@
           gameMode,
           gridSize,
           skin: currentSkin,
-          backdrop: currentBackdrop,
           shape: currentShape,
           speed: currentSpeed,
           soundEnabled,
+          soundVolume,
           fxEnabled,
         })
       );
@@ -435,10 +573,43 @@
     }
   }
 
-  function applyTheme(theme, persist = true) {
+  function buildThemeSwatches() {
+    if (!themeSwatchRow) return;
+    themeSwatchRow.innerHTML = "";
+    THEMES.forEach((tKey) => {
+      const meta = THEME_SWATCHES[tKey];
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "theme-swatch-dot";
+      btn.dataset.themeKey = tKey;
+      btn.style.background = meta.color;
+      btn.title = `${meta.label} (Connected Wallpaper)`;
+      btn.setAttribute("aria-label", meta.label);
+      btn.addEventListener("click", () => {
+        applyTheme(tKey);
+      });
+      themeSwatchRow.appendChild(btn);
+    });
+  }
+
+  function syncThemeSwatchesUI() {
+    if (themeSwatchRow) {
+      themeSwatchRow.querySelectorAll(".theme-swatch-dot").forEach((dot) => {
+        dot.classList.toggle("active", dot.dataset.themeKey === currentTheme);
+      });
+    }
+    syncWelcomeUI();
+  }
+
+  function applyTheme(theme, persist = true, { skipWallpaperNotify = false } = {}) {
     currentTheme = THEMES.includes(theme) ? theme : "classic";
     rootHtml.setAttribute("data-theme", currentTheme);
     themeSelect.value = currentTheme;
+    syncThemeSwatchesUI();
+
+    if (!skipWallpaperNotify && window.LiveWallpaperEngine) {
+      window.LiveWallpaperEngine.onThemeOrModeChanged(currentTheme, currentMode);
+    }
 
     if (!analytics.themesTried.includes(currentTheme)) {
       analytics.themesTried.push(currentTheme);
@@ -450,31 +621,27 @@
 
   function cycleTheme() {
     const idx = THEMES.indexOf(currentTheme);
-    applyTheme(THEMES[(idx + 1) % THEMES.length]);
+    const nextTheme = THEMES[(idx + 1) % THEMES.length];
+    applyTheme(nextTheme);
   }
 
   function applyMode(mode, persist = true) {
     currentMode = mode === "dark" ? "dark" : "light";
     rootHtml.setAttribute("data-mode", currentMode);
     // When in dark mode, button reads "Light Mode"; when in light mode, button reads "Dark Mode"
-    modeBtn.textContent = currentMode === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+    const label = currentMode === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+    modeBtn.textContent = label;
+    if (settingsModeBtn) settingsModeBtn.textContent = label;
+    syncWelcomeUI();
+
+    if (window.LiveWallpaperEngine) {
+      window.LiveWallpaperEngine.onThemeOrModeChanged(currentTheme, currentMode);
+    }
     if (persist) saveSettings();
   }
 
   function toggleMode() {
     applyMode(currentMode === "dark" ? "light" : "dark");
-  }
-
-  function applyBackdrop(backdrop, persist = true) {
-    currentBackdrop = ["spirals", "constellations", "waves", "minimal"].includes(backdrop)
-      ? backdrop
-      : "spirals";
-    rootHtml.setAttribute("data-backdrop", currentBackdrop);
-    backdropSelect.value = currentBackdrop;
-    if (currentBackdrop !== "minimal" && backdropPatternRect) {
-      backdropPatternRect.setAttribute("fill", `url(#pattern-${currentBackdrop})`);
-    }
-    if (persist) saveSettings();
   }
 
   function applyShape(shape, persist = true) {
@@ -558,7 +725,7 @@
   }
 
   // ==========================================================================
-  // Side Tabs & Slide-Out Drawer Controller
+  // Side Tabs, Slide-Out Drawer & Fullscreen Controller
   // ==========================================================================
   function openDrawer(tabName = "badges") {
     isDrawerOpen = true;
@@ -618,9 +785,22 @@
     });
 
     panelBadges.hidden = activeDrawerTab !== "badges";
+    panelWallpaper.hidden = activeDrawerTab !== "wallpaper";
     panelStudio.hidden = activeDrawerTab !== "studio";
     panelStats.hidden = activeDrawerTab !== "stats";
     panelGuide.hidden = activeDrawerTab !== "guide";
+  }
+
+  function toggleFullscreen() {
+    try {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    } catch {
+      // Ignore fullscreen permission errors
+    }
   }
 
   // ==========================================================================
@@ -795,6 +975,7 @@
     let scoreDelta = 0;
     let mergesThisMove = 0;
     let highestMerge = 0;
+    let highestMergeCell = null;
     let justWon = false;
     const burstTargets = [];
 
@@ -830,7 +1011,10 @@
           score += mergedValue;
           scoreDelta += mergedValue;
           mergesThisMove++;
-          if (mergedValue > highestMerge) highestMerge = mergedValue;
+          if (mergedValue > highestMerge) {
+            highestMerge = mergedValue;
+            highestMergeCell = { row: positions.next.r, col: positions.next.c };
+          }
           trackRunTile(mergedValue);
 
           // Lifetime merge stats
@@ -887,6 +1071,23 @@
     analytics.totalMoves++;
     analytics.lifetimeScore += scoreDelta;
     if (currentMode === "dark") analytics.usedDarkMode = true;
+
+    // Drive Live Wallpaper momentum & merge shockwave ripples!
+    if (window.LiveWallpaperEngine) {
+      window.LiveWallpaperEngine.triggerSlideImpulse(direction);
+      if (highestMerge >= 8 && highestMergeCell) {
+        const rect = gameContainer.getBoundingClientRect();
+        const cellStep = rect.width / gridSize;
+        const rx = rect.left + (highestMergeCell.col + 0.5) * cellStep;
+        const ry = rect.top + (highestMergeCell.row + 0.5) * cellStep;
+        window.LiveWallpaperEngine.triggerMergeRipple(highestMerge, rx, ry);
+
+        const wpState = window.LiveWallpaperEngine.getState();
+        if (highestMerge >= 512 && wpState.interactiveRipples && wpState.wallpaperId !== "minimal") {
+          analytics.triggered512Ripple = true;
+        }
+      }
+    }
 
     if (mergesThisMove > 0) {
       mergeStreak++;
@@ -1363,9 +1564,12 @@
   }
 
   function updateSoundUI() {
-    soundBtn.classList.toggle("active", soundEnabled);
-    soundBtn.setAttribute("aria-pressed", String(soundEnabled));
-    soundBtn.textContent = soundEnabled ? "🔊" : "🔇";
+    const isAudible = soundEnabled && soundVolume > 0;
+    soundBtn.classList.toggle("active", isAudible);
+    soundBtn.setAttribute("aria-pressed", String(isAudible));
+    soundBtn.textContent = isAudible ? "🔊" : "🔇";
+    if (volumeSlider) volumeSlider.value = String(soundVolume);
+    if (volumeLabel) volumeLabel.textContent = soundEnabled ? `${soundVolume}%` : "Muted";
   }
 
   function updateFxUI() {
@@ -1601,6 +1805,10 @@
 
   function checkAchievements() {
     const maxTile = getMaxTileValue();
+    const wpTriedCount = window.LiveWallpaperEngine
+      ? window.LiveWallpaperEngine.getState().wallpapersTried.length
+      : 1;
+
     const checks = {
       spark_64: maxTile >= 64,
       glow_256: maxTile >= 256,
@@ -1614,6 +1822,8 @@
       blitz_runner: gameMode === "blitz" && score >= 3000,
       night_owl: analytics.usedDarkMode,
       chameleon: analytics.themesTried.length >= 5,
+      living_canvas: wpTriedCount >= 3,
+      ripple_master: Boolean(analytics.triggered512Ripple),
     };
 
     let newlyUnlocked = false;
@@ -1681,7 +1891,7 @@
       const emptyMsg =
         currentAchFilter === "unlocked"
           ? "No achievements unlocked yet — slide and merge tiles to earn your first badge!"
-          : "All 12 achievements unlocked — true 2048 Grandmaster!";
+          : `All ${totalCount} achievements unlocked — true 2048 Grandmaster!`;
       achievementsGrid.innerHTML = `
         <div class="panel-hero-box" style="text-align:center;margin-bottom:0;">
           <p class="panel-desc">${emptyMsg}</p>
@@ -1772,6 +1982,7 @@
     const payload = {
       exportedAt: new Date().toISOString(),
       settings: JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS) || "{}"),
+      wallpaper: window.LiveWallpaperEngine ? window.LiveWallpaperEngine.getState() : null,
       analytics,
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -1799,7 +2010,6 @@
           loadSettings();
           applyTheme(currentTheme);
           applyMode(currentMode);
-          applyBackdrop(currentBackdrop);
           applyShape(currentShape);
           applySpeed(currentSpeed);
           applySkin(currentSkin);
@@ -1910,6 +2120,20 @@
     window.addEventListener("keydown", (event) => {
       if (event.ctrlKey || event.altKey || event.metaKey) return;
 
+      if (isWelcomeOpen) {
+        if (event.code === "Enter" || event.code === "Space") {
+          event.preventDefault();
+          dismissWelcomeScreen();
+        } else if (event.code === "KeyL") {
+          event.preventDefault();
+          toggleMode();
+        } else if (event.code === "KeyT") {
+          event.preventDefault();
+          cycleTheme();
+        }
+        return;
+      }
+
       if (event.code === "Escape" && isDrawerOpen) {
         event.preventDefault();
         closeDrawer();
@@ -1965,6 +2189,9 @@
       } else if (event.code === "KeyB") {
         event.preventDefault();
         toggleDrawer("badges");
+      } else if (event.code === "KeyV") {
+        event.preventDefault();
+        toggleDrawer("wallpaper");
       } else if (event.code === "KeyO") {
         event.preventDefault();
         toggleDrawer("studio");
@@ -1974,6 +2201,9 @@
       } else if (event.code === "Slash" && event.shiftKey) {
         event.preventDefault();
         toggleDrawer("guide");
+      } else if (event.code === "KeyF") {
+        event.preventDefault();
+        toggleFullscreen();
       } else if (event.code === "KeyM") {
         event.preventDefault();
         soundEnabled = !soundEnabled;
@@ -1998,6 +2228,11 @@
     closeDrawerBtn.addEventListener("click", closeDrawer);
     drawerScrim.addEventListener("click", closeDrawer);
 
+    quickWallpaperBtn.addEventListener("click", () => toggleDrawer("wallpaper"));
+    quickSettingsBtn.addEventListener("click", () => toggleDrawer("studio"));
+    jumpWallpaperBtn.addEventListener("click", () => openDrawer("wallpaper"));
+    fullscreenBtn.addEventListener("click", toggleFullscreen);
+
     achFilterChips.forEach((chip) => {
       chip.addEventListener("click", () => {
         currentAchFilter = chip.dataset.achFilter || "all";
@@ -2007,6 +2242,7 @@
 
     // Front Stage & Studio Controls
     modeBtn.addEventListener("click", toggleMode);
+    settingsModeBtn.addEventListener("click", toggleMode);
 
     fxBtn.addEventListener("click", () => {
       fxEnabled = !fxEnabled;
@@ -2035,11 +2271,6 @@
       e.target.blur();
     });
 
-    backdropSelect.addEventListener("change", (e) => {
-      applyBackdrop(e.target.value);
-      e.target.blur();
-    });
-
     shapeSelect.addEventListener("change", (e) => {
       applyShape(e.target.value);
       e.target.blur();
@@ -2048,6 +2279,13 @@
     speedSelect.addEventListener("change", (e) => {
       applySpeed(e.target.value);
       e.target.blur();
+    });
+
+    volumeSlider.addEventListener("input", (e) => {
+      soundVolume = Number(e.target.value);
+      if (soundVolume > 0 && !soundEnabled) soundEnabled = true;
+      updateSoundUI();
+      saveSettings();
     });
 
     restartBtn.addEventListener("click", () => startNewGame(true));
@@ -2075,6 +2313,17 @@
       tipIndex = (tipIndex + 1) % STRATEGY_TIPS.length;
       renderTip();
     });
+
+    welcomeStartBtn?.addEventListener("click", dismissWelcomeScreen);
+    welcomeModeBtn?.addEventListener("click", toggleMode);
+    welcomeVibePills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        if (pill.dataset.welcomeTheme) {
+          applyTheme(pill.dataset.welcomeTheme);
+        }
+      });
+    });
+    replayWelcomeBtn?.addEventListener("click", openWelcomeScreen);
 
     exportDataBtn.addEventListener("click", exportBackupJSON);
     importDataBtn.addEventListener("click", () => importFileInput.click());

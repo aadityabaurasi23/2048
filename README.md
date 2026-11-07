@@ -1,82 +1,66 @@
-# 2048 — Curated Studio Edition (`v2.1.0`)
+# 2048 — Curated Studio Edition (`v2.3.0`)
 
-![Version](https://img.shields.io/badge/release-v2.1.0-0284c7?style=flat-square)
-![Tech](https://img.shields.io/badge/stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-f59e0b?style=flat-square)
-![Dependencies](https://img.shields.io/badge/dependencies-zero-10b981?style=flat-square)
+![Version](https://img.shields.io/badge/release-v2.3.0-eab308?style=flat-square)
+![Tech](https://img.shields.io/badge/stack-HTML5%20Canvas%20%7C%20CSS3%20%7C%20AngularJS%20%7C%20Node.js-f59e0b?style=flat-square)
+![Offline](https://img.shields.io/badge/standalone-100%25%20offline%20ready-0284c7?style=flat-square)
 
-A minimalist, studio-crafted edition of the classic **2048** exponential puzzle game — built from scratch using **100% vanilla HTML, CSS, and JavaScript** with zero external libraries, frameworks, or asset files.
-
----
-
-## 🆕 Release Changelog (`v2.1.0`)
-
-### `v2.1.0` — Curated Minimalist Stage & Side-Tab Drawer Redesign
-- **Clean, Centered Front Stage:** Removed visual clutter from the main screen so the `464px × 464px` 2048 board takes center stage, framed only by a sleek **Hero Score Header**, compact **Command Dock** (with integrated milestone progress bar), and a slim **Live Telemetry Strip** (`Moves`, `Time`, `Streak`, `Next Goal`).
-- **Docked Side Tabs & Slide-Out Glass Drawer:** Relocated secondary panels into right-edge side tabs (**🏆 Achievements**, **🎨 Studio**, **📊 Analytics**, **📖 Guide**) that glide open in a frosted-glass side drawer (and dock as a bottom pill bar on mobile/tablet) while letting you continue playing uninterrupted.
-- **Curated Achievements Experience:** Added a live `0/12` counter and amber unlock-notification dot on the **🏆 Achievements** side tab, plus a completion progress bar and `All` / `Unlocked` / `Locked` filter chips inside the drawer.
-- **Release-Only CI/CD Workflow (No Deployment):** Updated `.github/workflows/release.yml` for `v2.1.x` to package and publish standalone HTML + `.zip` / `.tar.gz` GitHub Releases cleanly without any deployment jobs.
-
-### Previous Releases (`v2.0.2` & `v2.0.1`)
-- **`v2.0.2`:** Removed GitHub Pages deployment steps for 100% compatibility with private and public repositories.
-- **`v2.0.1`:** Expanded to **10 Themes × Light & Dark Modes (20 Palettes)**, **4 Game Modes**, **Tactical Power-Ups** (`Shuffle` & `Zap`), **4 Tile Skins**, **4 SVG Backdrops**, **Lifetime Analytics**, **12 Achievements**, and **JSON Save Export/Import**.
+A minimalist, studio-crafted edition of the classic **2048** exponential puzzle game — featuring a first-run translucent Welcome Showcase, a focused centered puzzle stage, **10 interactive 60 FPS theme-connected Live Wallpapers**, an **AngularJS Live Wallpaper Studio**, **Node.js** server/bundler tooling, and slide-out side tabs for **Achievements**, **Settings**, **Analytics**, and **Strategy**.
 
 ---
 
-## 📖 Overview
+## 🆕 Release Changelog (`v2.3.0`)
 
-Inspired by Gabriele Cirulli's 2014 classic, **2048 — Curated Studio Edition** pairs a calm, focused puzzle stage with slide-out side tabs for deep personalization and lifetime telemetry. Every slide shifts all tiles across the grid; when two tiles of identical rank collide, they fuse into the next power of two (`2¹ → 2² → … → 2¹¹` and beyond), adding each newly forged tile's value to your score.
+### `v2.3.0` — 24K Imperial Gold Classic Dark Mode & First-Run Translucent Welcome Showcase
+- **Refined Classic Warm — Dark Mode (`Obsidian & 24K Imperial Gold`):** Completely redesigned *Classic Warm's* Dark Mode palette (previously blue-tinted like *Ocean Blue*) into a rich **Obsidian, Antique Bronze & 24K Imperial Gold** color scale across the background glow, frosted-glass cards, gilded tile ranks (`2` → `2048`), and floating 60 FPS *Warm Spiral Doodles*.
+- **First-Run Translucent Welcome Showcase (`▶ Let's Start`):** First-time players are greeted by a curated frosted-glass showcase suspended over the live translucent game board and 60 FPS wallpaper — complete with an animated `2·0·4·8` tile crest, live **Starting Vibe & Dark/Light Mode** preview pills, and a shimmering **`▶ Let's Start`** CTA button (`Enter` / `Space` supported).
+- **Forever-Once Persistence (Until Cookie or Cache Clear):** Completion is saved permanently in **both** a long-lived browser cookie (`Expires=2099`) and `localStorage`. Returning players bypass the welcome screen instantaneously with zero flicker — unless browser cookies or cache/site-data are cleared (or re-opened manually via **✨ View Welcome Showcase Screen** in `📖 Guide`).
 
----
-
-## ✨ Architecture & Features
-
-### 🗂️ Docked Side Tabs & Slide-Out Drawer
-Keep your eyes on the board while accessing four dedicated side panels whenever you want:
-1. **🏆 Achievements (`B`):** Live `0/12` progress badge, notification dot on new unlocks, percentage progress bar, `All` / `Unlocked` / `Locked` filters, and 12 milestone challenges.
-2. **🎨 Customization Studio (`O`):** Switch Game Modes, Color Palettes, Board Grid Sizes (`3×3` to `6×6`), Tile Skins, SVG Backdrop Art, Tile Shapes, Motion Speeds, and Celebration Particles.
-3. **📊 Analytics & Vault (`G`):** Current Run Tile Vault (`2` through `2048`), Session Efficiency (`pts/move`), 8 Lifetime KPIs, Lifetime Tile Forge Matrix (`4` through `4096`), 10-Run Match History, and JSON Backup Export/Import.
-4. **📖 Guide & Shortcuts (`?`):** Rotating Grandmaster Pro Tips, strategy breakdown, and quick keyboard shortcut reference.
+### Previous Releases
+- **`v2.2.0`:** Added 10 interactive 60 FPS HTML5 `<canvas>` Live Wallpapers with 2-way Theme ↔ Wallpaper sync, AngularJS Wallpaper Studio, Fullscreen mode, Audio Synth Volume slider, 14 Achievements, and Node.js server/build scripts.
+- **`v2.1.0`:** Redesigned front UI into a minimalist centered stage with docked right-edge Side Tabs, slide-out glass drawer, and Achievement progress/filtering.
+- **`v2.0.2` & `v2.0.1`:** Streamlined release-only CI pipeline, 10 Themes × Light/Dark modes (20 palettes), 4 Game Modes, Power-Ups (`Shuffle` & `Zap`), Lifetime Analytics, and JSON Backup Export/Import.
 
 ---
 
-### 🎨 10 Color Themes × Light & Dark Modes (20 Complete Palettes)
-Toggle **🌙 Dark Mode** / **☀️ Light Mode** directly from the top header on *any* of the 10 curated themes — dynamically transforming the viewport gradient, frosted-glass panels, slide-out drawer, tile color scales, and SVG backdrop art:
+## 🎨 10 Themes × Connected 60 FPS Live Wallpapers (20 Palettes)
 
-| Theme | ☀️ Light Mode Variant | 🌙 Dark Mode Variant |
-| :--- | :--- | :--- |
-| **Classic Warm** | Retro Cream & Golden Amber | Midnight Black & Electric Blue |
-| **Ocean Blue** | Coastal Sky & Crisp Azure | Abyssal Trench & Bioluminescent Cyan |
-| **Cyberpunk Neon** | Daylight Synthwave Magenta | Night City Violet & Neon Pink/Cyan |
-| **Forest Emerald** | Mint Sage & Botanical Green | Deep Pine & Glowing Jade |
-| **Crimson Sunset** | Warm Peach & Coral | Volcanic Ember & Molten Gold |
-| **Royal Amethyst** | Soft Lavender & Iris | Cosmic Velvet & Imperial Gold |
-| **Sakura Blossom** | Spring Cherry Petal Blush | Midnight Hanami Plum & Rose |
-| **Nordic Frost** | Polar Glacier Ice & Slate | Arctic Night & Aurora Borealis |
-| **Mocha Espresso** | Warm Oat Latte & Caramel | Dark Roast Espresso & Golden Crema |
-| **Minimalist Ink** | Gallery Paper & Sumi Charcoal | Pure OLED Obsidian & Platinum |
+Every theme includes bespoke **☀️ Light Mode** and **🌙 Dark Mode** palettes and connects directly to its own animated Live Wallpaper:
 
----
+| Theme | Connected Live Wallpaper | Animated Background Elements | ☀️ Light / 🌙 Dark Mood |
+| :--- | :--- | :--- | :--- |
+| **Classic Warm** | **🌀 Warm Spiral Doodles** | Rotating Archimedean spirals, `2`/`4`/`2048` doodle tiles & golden motes | Retro Cream / **Obsidian & 24K Imperial Gold** |
+| **Forest Emerald** | **🌿 Green Doodle Grove** | Botanical green doodle leaves, emerald vine spirals, sprout tiles & fireflies | Mint Sage / Deep Glowing Jade |
+| **Ocean Blue** | **🌊 Abyssal Wave Currents** | Multi-layered ocean sine currents & rising specular bubbles | Coastal Azure / Bioluminescent Trench |
+| **Cyberpunk Neon** | **⚡ Synthwave Cyber Grid** | 3D scrolling neon horizon grid, synth sun & digital data pulses | Daylight Magenta / Night City Cyan |
+| **Crimson Sunset** | **🔥 Solar Horizon Embers** | Expanding solar halo rings, rising flickering embers & prism shards | Warm Peach / Volcanic Molten Gold |
+| **Royal Amethyst** | **✨ Celestial Constellations** | Twinkling stars dynamically linked by cursor-reactive constellation lines | Soft Lavender / Cosmic Velvet |
+| **Sakura Blossom** | **🌸 Sakura Petal Drift** | Wind-swept cherry blossom petals with 3D flutter & doodle swirls | Spring Blush / Midnight Hanami |
+| **Nordic Frost** | **❄️ Aurora Borealis & Frost** | Silky undulating northern-lights curtains & drifting 6-spoke snow crystals | Glacier Slate / Arctic Aurora |
+| **Mocha Espresso** | **☕ Café Roast Doodles** | Coffee bean sketches, latte-art spirals & rising aromatic steam wisps | Warm Oat Latte / Dark Roast Crema |
+| **Minimalist Ink** | **✒️ Sumi Ink Geometry** | Architectural orbit rings, precision crosshairs & minimal `2ⁿ` glyphs | Sumi Paper / Pure OLED Obsidian |
 
-### 🎭 Visual Studio Options
-- **4 Board Grid Dimensions:** `3×3 Mini`, `4×4 Classic`, `5×5 Big`, and `6×6 Giant` — each with independent saved state and high score.
-- **4 Tile Display Skins:**
-  - **Numbers:** Classic powers of two (`2, 4, 8 … 2048`)
-  - **Powers (`2ⁿ`):** Exponential notation (`2¹, 2², 2³ … 2¹¹`)
-  - **Roman Ranks:** Classical numerals with numeric sub-labels (`I, II, III … XI`)
-  - **Cosmic Icons:** Evolution emblems (`🌱 → 🌿 → 🌸 → 🔥 → ⚡ → 💎 → 🌙 → ☀️ → 🪐 → 🌟 → 🌌`)
-- **4 Theme-Adaptive SVG Backdrops:** `Spirals & Doodles`, `Star Constellations`, `Zen Topo Waves`, and `Clean Gradient`.
-- **3 Tile Corner Shapes:** `Rounded`, `Crisp Sharp`, and `Soft Bubble`.
-- **3 Motion Speeds:** `Fast (65ms)`, `Normal (110ms)`, and `Relaxed (175ms)`, plus toggleable **✨ Celebration Particles**.
+*(Plus **🫧 Clean Static Gradient** for zero-motion battery saving on any theme.)*
 
 ---
 
-### 🎮 4 Playable Game Modes & Tactical Power-Ups
-- **Classic Endless:** Standard rules (90% `2`, 10% `4` spawns). Forge `2048` to win, then click **Keep going** to push toward `4096` and `8192`.
+## 🗂️ Curated Front Stage, Welcome Showcase & 5 Side Tabs
+
+- **✨ First-Run Welcome Showcase:** Translucent glass intro over the live board & wallpaper with instant Theme/Dark-Mode previewing and **`▶ Let's Start`** button — shown once forever until browser cookies or cache are cleared.
+- **🏆 Achievements (`B`):** Live `0/14` rail counter, amber unlock-notification dot, completion bar, `All` / `Unlocked` / `Locked` filters, and 14 milestone badges.
+- **🖼️ Wallpaper (`V`):** AngularJS-powered Live Wallpaper gallery, **🔗 Connected to Theme (2-Way Sync)** vs **🔓 Mix & Match** switch, category chips, motion pause/resume, speed slider, density selector, and merge shockwave ripple toggle.
+- **⚙️ Settings (`O`):** Game Mode selector, Color Theme dropdown + **10-Theme Quick Swatch Dots**, Dark/Light switch, Board Grid (`3×3` to `6×6`), Tile Skin (`Numbers`, `Powers 2ⁿ`, `Roman`, `Cosmic`), Tile Shape (`Rounded`, `Crisp Sharp`, `Soft Bubble`), Slide Speed, **Audio Synth Volume (`0%`–`100%`)**, and Celebration Particles.
+- **📊 Analytics (`G`):** Current Run Tile Vault (`2`–`2048`), Session Efficiency (`pts/move`), 8 Lifetime KPIs, Lifetime Tile Forge Matrix (`4`–`4096`), 10-Run Match History, and JSON Backup Export/Import.
+- **📖 Guide (`?`):** Rotating Grandmaster Pro Tips, strategy breakdown, keyboard shortcut reference, and on-demand **✨ View Welcome Showcase Screen** button.
+
+---
+
+## 🎮 4 Game Modes & Tactical Power-Ups
+
+- **Classic Endless:** Standard rules (90% `2`, 10% `4` spawns). Forge `2048` to win, then click **Keep going** toward `4096` and `8192`.
 - **⏱️ 2-Min Time Blitz:** Race against a 120-second countdown clock to maximize your score before time expires.
 - **🧘 Zen Relax:** Stress-free endless sandbox with unlimited `Undo`, `Shuffle`, and `Zap` charges and zero Game Over lockouts.
 - **🔥 Hardcore Purist:** 25% `4`-tile spawn rate with `Undo`, `Hint`, `Auto-Play`, and `Power-Ups` disabled.
-- **🔀 Shuffle (`X`) & ⚡ Zap (`C`):** Rearrange gridlocked boards or vaporize a lowest-value tile; forging `512`, `1024`, `2048`, or `4096` awards `+1` bonus charge (up to 3).
-- **💡 Smart Hint (`H`) & 🤖 Auto-Play AI (`P`):** Built-in snake-monotonicity & corner-anchor heuristic solver, paired with a zero-asset **🔊 Web Audio Synthesizer**.
+- **🔀 Shuffle (`X`), ⚡ Zap (`C`), 💡 Smart Hint (`H`) & 🤖 Auto-Play AI (`P`):** Built-in snake-monotonicity solver and milestone bonus charges (`512`, `1024`, `2048`, `4096`).
 
 ---
 
@@ -84,37 +68,38 @@ Toggle **🌙 Dark Mode** / **☀️ Light Mode** directly from the top header o
 
 | Input / Key | Action |
 | :--- | :--- |
-| `↑` `↓` `←` `→` or `W` `A` `S` `D` | Slide tiles |
+| `Enter` / `Space` | Dismiss first-run **Welcome Showcase** (`▶ Let's Start`) |
+| `↑` `↓` `←` `→` or `W` `A` `S` `D` | Slide tiles (also drives Live Wallpaper breeze & merge ripples) |
 | **Touch Swipe** | Slide tiles on mobile & tablets |
 | `L` | Toggle **🌙 Dark Mode / ☀️ Light Mode** |
-| `T` | Cycle through all **10 Color Themes** |
+| `T` | Cycle through all **10 Themes & Connected Wallpapers** |
+| `V` | Toggle **🖼️ Live Wallpaper Studio** drawer |
+| `O` | Toggle **⚙️ Settings & Theme Studio** drawer |
+| `B` / `G` / `?` | Toggle **🏆 Achievements** / **📊 Analytics** / **📖 Guide** drawer |
 | `Z` or `U` | **Undo** previous move / action (up to 30 steps) |
-| `H` | Show floating **Best Move Hint** |
+| `H` / `P` | Show **💡 Best Move Hint** / Toggle **🤖 Auto-Play AI** |
 | `X` / `C` | Use **🔀 Shuffle** / **⚡ Zap** power-up |
-| `P` | Toggle **🤖 Auto-Play AI** |
-| `B` | Toggle **🏆 Achievements** side drawer |
-| `O` | Toggle **🎨 Customization Studio** side drawer |
-| `G` | Toggle **📊 Analytics & Vault** side drawer |
-| `?` (`Shift + /`) | Toggle **📖 Strategy Guide** side drawer |
-| `M` | Mute / Unmute **🔊 Sound Effects** |
-| `R` | Start a **New Game** |
-| `Esc` | Close open side drawer |
+| `F` | Toggle **⛶ Fullscreen Mode** |
+| `M` / `R` / `Esc` | Mute Audio / Start **New Game** / Close open side drawer |
 
 ---
 
-## 🚀 Running Locally & App Releases (`v2.1.0`)
+## 🚀 Running Locally & App Releases (`v2.3.0`)
 
-### Option 1: Download Standalone Release (`v2.1.0`)
-From the **GitHub Releases** page (`v2.1.0`), download:
-- **`2048-standalone.html`** — Single self-contained HTML app with all CSS and JS embedded for instant offline play.
-- **`2048-app-v2.1.0.zip` / `2048-app-v2.1.0.tar.gz`** — Complete web & source archive.
+### Option 1: Open Directly in Browser (Zero Install)
+Simply double-click **`index.html`** (or download **`2048-standalone.html`** from GitHub Releases) in any modern browser — works immediately out of the box, online or offline!
 
-### Option 2: Run from Source
-1. Clone or download this repository.
-2. Open `index.html` directly in any modern browser — no build step or server required.
+### Option 2: Run with Node.js Server & Build Scripts
+If you have **Node.js 18+** installed:
+```bash
+npm install
+npm start        # Launches local Studio Server at http://localhost:3000 (+ /api/wallpapers)
+npm run verify   # Verifies JS syntax and DOM ID / asset tag integrity
+npm run build    # Compiles self-contained release-assets/2048-standalone.html
+```
 
-### Release-Only GitHub Actions Workflow
-`.github/workflows/release.yml` packages and publishes a new **GitHub App Release** (`v2.1.0`, `v2.1.1`, …) on pushes to `main`, `v*` tags, or manual `workflow_dispatch` runs — attaching `2048-standalone.html`, `.zip`, and `.tar.gz` bundles **without any external deployment jobs**.
+### Automated Release-Only GitHub Actions Workflow
+`.github/workflows/release.yml` sets up Node.js 20, installs AngularJS, runs `npm run verify` and `npm run build` to embed CSS + AngularJS + `wallpaper.js` + `script.js` into **`2048-standalone.html`**, and publishes `.zip`, `.tar.gz`, and standalone HTML assets to **GitHub Releases** (`v2.3.0`, `v2.3.1`, …) with **zero deployment jobs**.
 
 ---
 
@@ -124,9 +109,15 @@ From the **GitHub Releases** page (`v2.1.0`), download:
 2048/
 ├── .github/
 │   └── workflows/
-│       └── release.yml  # Release-only CI packaging (standalone HTML, .zip & .tar.gz — no deployment)
-├── index.html           # Curated centered stage, docked side tabs rail & 4-panel slide-out drawer
-├── style.css            # 20 theme/mode palettes, glass drawer transitions, tile skins & responsive layout
-├── script.js            # Core engine, side-drawer controller, filtered achievements, AI & Web Audio synth
-└── README.md            # Documentation, v2.1.0 changelog, palettes & controls reference
+│       └── release.yml          # Node.js 20 CI verification, standalone bundler & GitHub Release (no deployment)
+├── scripts/
+│   ├── build-standalone.js      # Compiles single-file offline 2048-standalone.html
+│   └── verify.js                # V8 syntax & DOM ID integrity checker
+├── index.html                   # Minimalist stage, translucent Welcome Showcase, side tabs & AngularJS Studio
+├── style.css                    # 20 palettes (incl. 24K Gold Classic Dark), welcome glass card & tile skins
+├── wallpaper.js                 # 60 FPS HTML5 Canvas Live Wallpaper Engine + AngularJS Studio & offline fallback
+├── script.js                    # Core 2048 engine, cookie+localStorage welcome persistence, AI, 14 badges & synth
+├── server.js                    # Lightweight Node.js local HTTP server & /api/wallpapers endpoint
+├── package.json                 # Node.js package manifest (v2.3.0), AngularJS dependency & npm scripts
+└── README.md                    # Documentation, v2.3.0 changelog & theme-wallpaper pairing guide
 ```
