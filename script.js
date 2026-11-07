@@ -81,8 +81,8 @@
     "Pick 3 primary directions (e.g., Up, Left, Right) and avoid the 4th direction unless no other move exists.",
     "Arrange tiles in a descending snake chain (2048 → 1024 → 512 → 256) so merges cascade effortlessly.",
     "Reaching 2048 requires at least 1,024 total two-equivalents — patience in keeping empty cells is key!",
-    "Save your ⚡ Zap Low power-up for when a newly spawned 2 gets trapped beside your corner anchor.",
-    "Consecutive merges build your 🔥 Merge Streak — set up two pairs before triggering a double cascade.",
+    "Save your ⚡ Zap power-up for when a newly spawned 2 gets trapped beside your corner anchor.",
+    "Consecutive merges build your 🔥 Streak — set up two pairs before triggering a double cascade.",
     "On the 3×3 Mini grid, only 9 cells exist (max theoretical tile is 1024). Every single slide counts!",
     "In 2-Min Blitz mode, Fast motion speed + quick corner sweeps maximize your Points-Per-Second.",
     "Avoid trapping small tiles between two large tiles; keep neighbor ranks smooth (e.g., 128 next to 64).",
@@ -143,7 +143,7 @@
   const tryAgainBtn = document.getElementById("try-again-btn");
   const gameContainer = document.getElementById("game-container");
 
-  // Controls & Studio Selectors
+  // Front Dock Controls & Studio Selectors
   const modeBtn = document.getElementById("mode-btn");
   const fxBtn = document.getElementById("fx-btn");
   const restartBtn = document.getElementById("restart-btn");
@@ -164,31 +164,41 @@
   const shapeSelect = document.getElementById("shape-select");
   const speedSelect = document.getElementById("speed-select");
 
-  // Vault, Tips & Hub Modal
+  // Side Tabs Rail & Slide-Out Drawer Elements
+  const sideDrawer = document.getElementById("side-drawer");
+  const drawerScrim = document.getElementById("drawer-scrim");
+  const closeDrawerBtn = document.getElementById("close-drawer-btn");
+  const sideTabBtns = document.querySelectorAll(".side-tab-btn");
+  const drawerPills = document.querySelectorAll(".drawer-pill");
+  const panelBadges = document.getElementById("panel-badges");
+  const panelStudio = document.getElementById("panel-studio");
+  const panelStats = document.getElementById("panel-stats");
+  const panelGuide = document.getElementById("panel-guide");
+
+  // Achievements, Vault, Analytics & Guide Elements
+  const achievementSummaryEl = document.getElementById("achievement-summary");
+  const badgeNotifyDot = document.getElementById("badge-notify-dot");
+  const achPctLabel = document.getElementById("ach-pct-label");
+  const achProgressFill = document.getElementById("ach-progress-fill");
+  const achFilterChips = document.querySelectorAll(".filter-chip[data-ach-filter]");
+  const achievementsGrid = document.getElementById("achievements-grid");
+
   const vaultGrid = document.getElementById("vault-grid");
   const vaultCountEl = document.getElementById("vault-count");
-  const tipTextEl = document.getElementById("tip-text");
-  const nextTipBtn = document.getElementById("next-tip-btn");
-  const achievementSummaryEl = document.getElementById("achievement-summary");
-
-  const openStatsBtn = document.getElementById("open-stats-btn");
-  const openBadgesBtn = document.getElementById("open-badges-btn");
-  const openGuideBtn = document.getElementById("open-guide-btn");
-  const hubModal = document.getElementById("hub-modal");
-  const closeModalBtn = document.getElementById("close-modal-btn");
-  const modalTabs = document.querySelectorAll(".modal-tab");
   const kpiGrid = document.getElementById("kpi-grid");
   const forgeMatrix = document.getElementById("forge-matrix");
   const historyTbody = document.getElementById("history-tbody");
-  const achievementsGrid = document.getElementById("achievements-grid");
   const exportDataBtn = document.getElementById("export-data-btn");
   const importDataBtn = document.getElementById("import-data-btn");
   const resetDataBtn = document.getElementById("reset-data-btn");
   const importFileInput = document.getElementById("import-file-input");
+
+  const tipTextEl = document.getElementById("tip-text");
+  const nextTipBtn = document.getElementById("next-tip-btn");
   const toastContainer = document.getElementById("toast-container");
 
   // ==========================================================================
-  // Settings, Session & Lifetime Analytics State
+  // Settings, Drawer, Session & Lifetime Analytics State
   // ==========================================================================
   let gridSize = 4;
   let gameMode = "classic";
@@ -201,6 +211,11 @@
   let soundEnabled = true;
   let fxEnabled = true;
   let tipIndex = 0;
+
+  // Side Drawer UI State
+  let isDrawerOpen = false;
+  let activeDrawerTab = "badges";
+  let currentAchFilter = "all";
 
   // Active Run State
   let grid = [];
@@ -229,6 +244,7 @@
   let gameClockTimer = null;
   let aiInterval = null;
   let hintHideTimer = null;
+  let scrimHideTimer = null;
   let audioCtx = null;
 
   function createDefaultAnalytics() {
@@ -331,6 +347,7 @@
     updateFxUI();
     updateAchievementSummaryUI();
     renderTip();
+    renderDrawerContents();
 
     bestScore = getBestScore(gameMode, gridSize);
     bestScoreElement.textContent = bestScore;
@@ -480,6 +497,7 @@
     if (grid.length > 0) {
       renderBoard({ fullRebuild: true });
       renderVaultUI();
+      updateStatsUI();
     }
     if (persist) saveSettings();
   }
@@ -537,6 +555,72 @@
 
   function getBestScore(mode, size) {
     return Number(localStorage.getItem(getBestScoreKey(mode, size))) || 0;
+  }
+
+  // ==========================================================================
+  // Side Tabs & Slide-Out Drawer Controller
+  // ==========================================================================
+  function openDrawer(tabName = "badges") {
+    isDrawerOpen = true;
+    activeDrawerTab = tabName;
+
+    document.body.classList.add("drawer-open");
+    sideDrawer.setAttribute("aria-hidden", "false");
+
+    if (scrimHideTimer) {
+      clearTimeout(scrimHideTimer);
+      scrimHideTimer = null;
+    }
+    drawerScrim.hidden = false;
+    requestAnimationFrame(() => {
+      drawerScrim.classList.add("visible");
+    });
+
+    if (tabName === "badges") {
+      badgeNotifyDot.hidden = true;
+    }
+
+    syncDrawerTabsUI();
+    renderDrawerContents();
+  }
+
+  function closeDrawer() {
+    isDrawerOpen = false;
+    document.body.classList.remove("drawer-open");
+    sideDrawer.setAttribute("aria-hidden", "true");
+    drawerScrim.classList.remove("visible");
+
+    if (scrimHideTimer) clearTimeout(scrimHideTimer);
+    scrimHideTimer = setTimeout(() => {
+      if (!isDrawerOpen) drawerScrim.hidden = true;
+    }, 320);
+
+    syncDrawerTabsUI();
+  }
+
+  function toggleDrawer(tabName) {
+    if (isDrawerOpen && activeDrawerTab === tabName) {
+      closeDrawer();
+    } else {
+      openDrawer(tabName);
+    }
+  }
+
+  function syncDrawerTabsUI() {
+    sideTabBtns.forEach((btn) => {
+      btn.classList.toggle("active", isDrawerOpen && btn.dataset.drawerTab === activeDrawerTab);
+    });
+
+    drawerPills.forEach((pill) => {
+      const isMatch = pill.dataset.drawerTab === activeDrawerTab;
+      pill.classList.toggle("active", isMatch);
+      pill.setAttribute("aria-selected", String(isMatch));
+    });
+
+    panelBadges.hidden = activeDrawerTab !== "badges";
+    panelStudio.hidden = activeDrawerTab !== "studio";
+    panelStats.hidden = activeDrawerTab !== "stats";
+    panelGuide.hidden = activeDrawerTab !== "guide";
   }
 
   // ==========================================================================
@@ -607,6 +691,7 @@
     updateStatsUI();
     updateActionButtonsUI();
     renderVaultUI();
+    if (isDrawerOpen) renderDrawerContents();
     updateMessageUI();
   }
 
@@ -840,7 +925,6 @@
 
     if (!movesAvailable()) {
       if (gameMode === "zen") {
-        // Zen mode never locks out: vaporize lowest tile automatically or keep playing
         showToast("🧘 Zen Mode: Board full — use Shuffle or Zap freely!");
       } else {
         over = true;
@@ -860,6 +944,7 @@
     updateStatsUI();
     updateActionButtonsUI();
     renderVaultUI();
+    if (isDrawerOpen) renderDrawerContents();
     updateMessageUI();
     return true;
   }
@@ -899,6 +984,7 @@
     updateStatsUI();
     updateActionButtonsUI();
     renderVaultUI();
+    if (isDrawerOpen) renderDrawerContents();
     updateMessageUI();
   }
 
@@ -920,7 +1006,6 @@
     usedAssistInRun = true;
     if (gameMode !== "zen") shuffleCharges--;
 
-    // Build all coordinates and shuffle using Fisher-Yates
     const allCoords = [];
     for (let r = 0; r < gridSize; r++) {
       for (let c = 0; c < gridSize; c++) {
@@ -945,7 +1030,6 @@
     over = !movesAvailable() && gameMode !== "zen";
     playSound("power");
     saveState();
-    // Smoothly glide existing tile DOM nodes to their new shuffled slots
     renderBoard({ fullRebuild: false });
     updateActionButtonsUI();
     updateMessageUI();
@@ -1175,7 +1259,7 @@
       if (isGameTerminated()) return;
       aiBtn.classList.add("active");
       aiBtn.setAttribute("aria-pressed", "true");
-      aiBtn.textContent = "⏹ Stop AI";
+      aiBtn.textContent = "⏹ Stop";
       aiInterval = setInterval(() => {
         if (isGameTerminated()) {
           stopAutoPlay();
@@ -1198,7 +1282,7 @@
     }
     aiBtn.classList.remove("active");
     aiBtn.setAttribute("aria-pressed", "false");
-    aiBtn.textContent = "🤖 Auto-Play";
+    aiBtn.textContent = "🤖 AI";
   }
 
   // ==========================================================================
@@ -1216,6 +1300,7 @@
           recordGameToHistory();
           checkAchievements();
           saveState();
+          if (isDrawerOpen) renderDrawerContents();
           updateMessageUI();
         }
         updateStatsUI();
@@ -1243,9 +1328,9 @@
     }
 
     const eff = moveCount > 0 ? (score / moveCount).toFixed(1) : "0.0";
-    statEfficiencyEl.textContent = eff;
+    statEfficiencyEl.textContent = `${eff} pts/move`;
 
-    streakPill.textContent = `🔥 Streak ×${mergeStreak}`;
+    streakPill.textContent = `🔥 ×${mergeStreak}`;
     streakPill.classList.toggle("hot", mergeStreak >= 3);
 
     // Max Tile & Milestone Progress
@@ -1254,7 +1339,7 @@
 
     const milestones = [128, 256, 512, 1024, 2048, 4096, 8192, 16384];
     const nextGoal = milestones.find((m) => m > maxTile) || maxTile * 2;
-    progressGoalLabel.textContent = `Next Goal: ${formatPlainSkinLabel(nextGoal)}`;
+    progressGoalLabel.textContent = `Goal ${formatPlainSkinLabel(nextGoal)}`;
 
     const currentPower = Math.log2(maxTile);
     const goalPower = Math.log2(nextGoal);
@@ -1280,12 +1365,15 @@
   function updateSoundUI() {
     soundBtn.classList.toggle("active", soundEnabled);
     soundBtn.setAttribute("aria-pressed", String(soundEnabled));
-    soundBtn.textContent = soundEnabled ? "🔊 Sound" : "🔇 Muted";
+    soundBtn.textContent = soundEnabled ? "🔊" : "🔇";
   }
 
   function updateFxUI() {
     fxBtn.classList.toggle("active", fxEnabled);
     fxBtn.setAttribute("aria-pressed", String(fxEnabled));
+    fxBtn.textContent = fxEnabled
+      ? "✨ Celebration Particles: ON"
+      : "✨ Celebration Particles: OFF";
   }
 
   // ==========================================================================
@@ -1296,7 +1384,7 @@
       return `2^${Math.round(Math.log2(value))}`;
     }
     if (currentSkin === "roman") {
-      return ROMAN_RANKS[value] ? `${ROMAN_RANKS[value]} (${value})` : String(value);
+      return ROMAN_RANKS[value] || String(value);
     }
     if (currentSkin === "cosmic") {
       return COSMIC_ICONS[value] ? `${COSMIC_ICONS[value]} ${value}` : String(value);
@@ -1490,7 +1578,7 @@
   }
 
   // ==========================================================================
-  // Achievements, History & Player Hub Modal
+  // Achievements, Match History & Side Drawer Rendering
   // ==========================================================================
   function recordGameToHistory() {
     if (gameRecorded) return;
@@ -1541,11 +1629,17 @@
       playSound("badge");
       saveAnalytics();
       updateAchievementSummaryUI();
+      if (!(isDrawerOpen && activeDrawerTab === "badges")) {
+        badgeNotifyDot.hidden = false;
+      }
+      if (isDrawerOpen) {
+        renderDrawerContents();
+      }
     }
   }
 
   function updateAchievementSummaryUI() {
-    achievementSummaryEl.textContent = `🏆 ${analytics.unlockedBadges.length}/${ACHIEVEMENTS.length}`;
+    achievementSummaryEl.textContent = `${analytics.unlockedBadges.length}/${ACHIEVEMENTS.length}`;
   }
 
   function showToast(message) {
@@ -1559,30 +1653,61 @@
     }, 3400);
   }
 
-  function openHubModal(tabName = "stats") {
-    renderHubModalContents();
-    switchModalTab(tabName);
-    hubModal.hidden = false;
-  }
+  function renderDrawerContents() {
+    // 1. Achievements Progress, Filter Chips & Cards
+    const unlockedCount = analytics.unlockedBadges.length;
+    const totalCount = ACHIEVEMENTS.length;
+    const achPct = Math.round((unlockedCount / totalCount) * 100);
 
-  function closeHubModal() {
-    hubModal.hidden = true;
-  }
+    achPctLabel.textContent = `${achPct}% Complete`;
+    achProgressFill.style.width = `${achPct}%`;
 
-  function switchModalTab(tabName) {
-    modalTabs.forEach((btn) => {
-      const isMatch = btn.dataset.tab === tabName;
-      btn.classList.toggle("active", isMatch);
-      btn.setAttribute("aria-selected", String(isMatch));
+    achFilterChips.forEach((chip) => {
+      const f = chip.dataset.achFilter;
+      chip.classList.toggle("active", f === currentAchFilter);
+      if (f === "all") chip.textContent = `All (${totalCount})`;
+      else if (f === "unlocked") chip.textContent = `Unlocked (${unlockedCount})`;
+      else if (f === "locked") chip.textContent = `Locked (${totalCount - unlockedCount})`;
     });
 
-    document.getElementById("tab-stats").hidden = tabName !== "stats";
-    document.getElementById("tab-badges").hidden = tabName !== "badges";
-    document.getElementById("tab-guide").hidden = tabName !== "guide";
-  }
+    const filteredAchievements = ACHIEVEMENTS.filter((ach) => {
+      const isUnlocked = analytics.unlockedBadges.includes(ach.id);
+      if (currentAchFilter === "unlocked") return isUnlocked;
+      if (currentAchFilter === "locked") return !isUnlocked;
+      return true;
+    });
 
-  function renderHubModalContents() {
-    // 1. KPI Summary
+    if (filteredAchievements.length === 0) {
+      const emptyMsg =
+        currentAchFilter === "unlocked"
+          ? "No achievements unlocked yet — slide and merge tiles to earn your first badge!"
+          : "All 12 achievements unlocked — true 2048 Grandmaster!";
+      achievementsGrid.innerHTML = `
+        <div class="panel-hero-box" style="text-align:center;margin-bottom:0;">
+          <p class="panel-desc">${emptyMsg}</p>
+        </div>
+      `;
+    } else {
+      achievementsGrid.innerHTML = filteredAchievements
+        .map((ach) => {
+          const unlocked = analytics.unlockedBadges.includes(ach.id);
+          return `
+            <div class="ach-card ${unlocked ? "unlocked" : ""}">
+              <div class="ach-icon">${ach.icon}</div>
+              <div class="ach-meta">
+                <div class="ach-title-row">
+                  <span class="ach-title">${ach.title}</span>
+                  <span class="ach-status">${unlocked ? "Unlocked ✓" : "Locked"}</span>
+                </div>
+                <div class="ach-desc">${ach.desc}</div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    // 2. Lifetime Telemetry KPIs
     const winRate =
       analytics.gamesPlayed > 0
         ? `${Math.round((analytics.gamesWon / analytics.gamesPlayed) * 100)}%`
@@ -1604,15 +1729,15 @@
     kpiGrid.innerHTML = kpis
       .map(
         (k) => `
-      <div class="kpi-box">
-        <div class="kpi-label">${k.label}</div>
-        <div class="kpi-val">${k.val}</div>
-      </div>
-    `
+        <div class="kpi-box">
+          <span class="kpi-label">${k.label}</span>
+          <span class="kpi-val">${k.val}</span>
+        </div>
+      `
       )
       .join("");
 
-    // 2. Lifetime Tile Forge Matrix
+    // 3. Lifetime Tile Forge Matrix
     forgeMatrix.innerHTML = FORGE_TIERS.map((tier) => {
       const count = analytics.tileCounts[tier] || 0;
       return `
@@ -1623,39 +1748,24 @@
       `;
     }).join("");
 
-    // 3. Recent Match History
+    // 4. Recent Match History (5 compact columns)
     if (analytics.recentGames.length === 0) {
-      historyTbody.innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.7;">Complete or restart a game to see match history here.</td></tr>`;
+      historyTbody.innerHTML = `<tr><td colspan="5" style="text-align:center;opacity:0.7;">Complete or restart a run to log match history.</td></tr>`;
     } else {
       historyTbody.innerHTML = analytics.recentGames
         .map(
           (g) => `
-        <tr>
-          <td><strong>${g.mode}</strong></td>
-          <td>${g.grid}</td>
-          <td>${g.score}</td>
-          <td>${g.maxTile}</td>
-          <td>${g.moves}</td>
-          <td>${g.time}</td>
-        </tr>
-      `
+          <tr>
+            <td><strong>${g.mode}</strong></td>
+            <td>${g.grid}</td>
+            <td>${g.score}</td>
+            <td>${g.maxTile}</td>
+            <td>${g.time}</td>
+          </tr>
+        `
         )
         .join("");
     }
-
-    // 4. Achievements Grid
-    achievementsGrid.innerHTML = ACHIEVEMENTS.map((ach) => {
-      const unlocked = analytics.unlockedBadges.includes(ach.id);
-      return `
-        <div class="ach-card ${unlocked ? "unlocked" : ""}">
-          <div class="ach-icon">${ach.icon}</div>
-          <div>
-            <div class="ach-title">${ach.title} ${unlocked ? "✓" : ""}</div>
-            <div class="ach-desc">${ach.desc}</div>
-          </div>
-        </div>
-      `;
-    }).join("");
   }
 
   function exportBackupJSON() {
@@ -1693,9 +1803,11 @@
           applyShape(currentShape);
           applySpeed(currentSpeed);
           applySkin(currentSkin);
+          updateSoundUI();
+          updateFxUI();
         }
         updateAchievementSummaryUI();
-        renderHubModalContents();
+        renderDrawerContents();
         showToast("⬆ Backup imported successfully!");
       } catch {
         showToast("⚠️ Invalid JSON backup file.");
@@ -1773,7 +1885,6 @@
       nextTileId = Number(saved.nextTileId) || 100;
       undoStack = Array.isArray(saved.undoStack) ? saved.undoStack : [];
 
-      // Ensure currently visible tiles are marked in unlockedInRun
       for (let r = 0; r < size; r++) {
         for (let c = 0; c < size; c++) {
           if (grid[r][c]) trackRunTile(grid[r][c].value);
@@ -1799,13 +1910,14 @@
     window.addEventListener("keydown", (event) => {
       if (event.ctrlKey || event.altKey || event.metaKey) return;
 
-      if (event.code === "Escape" && !hubModal.hidden) {
+      if (event.code === "Escape" && isDrawerOpen) {
         event.preventDefault();
-        closeHubModal();
+        closeDrawer();
         return;
       }
 
-      if (!hubModal.hidden || event.target.tagName === "SELECT") return;
+      const tag = event.target?.tagName;
+      if (tag === "SELECT" || tag === "INPUT" || tag === "TEXTAREA") return;
 
       const keyMap = {
         ArrowUp: "up",
@@ -1835,7 +1947,7 @@
       } else if (event.code === "KeyT") {
         event.preventDefault();
         cycleTheme();
-      } else if (event.code === "KeyL" || event.code === "KeyB") {
+      } else if (event.code === "KeyL") {
         event.preventDefault();
         toggleMode();
       } else if (event.code === "KeyH") {
@@ -1850,12 +1962,18 @@
       } else if (event.code === "KeyC") {
         event.preventDefault();
         useZapPowerUp();
+      } else if (event.code === "KeyB") {
+        event.preventDefault();
+        toggleDrawer("badges");
+      } else if (event.code === "KeyO") {
+        event.preventDefault();
+        toggleDrawer("studio");
       } else if (event.code === "KeyG") {
         event.preventDefault();
-        openHubModal("stats");
+        toggleDrawer("stats");
       } else if (event.code === "Slash" && event.shiftKey) {
         event.preventDefault();
-        openHubModal("guide");
+        toggleDrawer("guide");
       } else if (event.code === "KeyM") {
         event.preventDefault();
         soundEnabled = !soundEnabled;
@@ -1864,6 +1982,30 @@
       }
     });
 
+    // Side Tabs Rail & Drawer Navigation
+    sideTabBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        toggleDrawer(btn.dataset.drawerTab);
+      });
+    });
+
+    drawerPills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        openDrawer(pill.dataset.drawerTab);
+      });
+    });
+
+    closeDrawerBtn.addEventListener("click", closeDrawer);
+    drawerScrim.addEventListener("click", closeDrawer);
+
+    achFilterChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        currentAchFilter = chip.dataset.achFilter || "all";
+        renderDrawerContents();
+      });
+    });
+
+    // Front Stage & Studio Controls
     modeBtn.addEventListener("click", toggleMode);
 
     fxBtn.addEventListener("click", () => {
@@ -1934,22 +2076,6 @@
       renderTip();
     });
 
-    // Player Hub Modal Controls
-    openStatsBtn.addEventListener("click", () => openHubModal("stats"));
-    openBadgesBtn.addEventListener("click", () => openHubModal("badges"));
-    openGuideBtn.addEventListener("click", () => openHubModal("guide"));
-    closeModalBtn.addEventListener("click", closeHubModal);
-
-    hubModal.addEventListener("click", (e) => {
-      if (e.target === hubModal) closeHubModal();
-    });
-
-    modalTabs.forEach((tabBtn) => {
-      tabBtn.addEventListener("click", () => {
-        switchModalTab(tabBtn.dataset.tab);
-      });
-    });
-
     exportDataBtn.addEventListener("click", exportBackupJSON);
     importDataBtn.addEventListener("click", () => importFileInput.click());
     importFileInput.addEventListener("change", (e) => {
@@ -1962,8 +2088,9 @@
       if (window.confirm("Reset all lifetime analytics, match history, and achievements?")) {
         analytics = createDefaultAnalytics();
         saveAnalytics();
+        badgeNotifyDot.hidden = true;
         updateAchievementSummaryUI();
-        renderHubModalContents();
+        renderDrawerContents();
         showToast("🗑 Lifetime analytics reset.");
       }
     });

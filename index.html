@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="2048 Curated Edition — A customizable vanilla HTML, CSS, and JavaScript puzzle game featuring 10 themes with Light & Dark modes, 4 game modes, AI solver, analytics, and achievements." />
+  <meta name="description" content="2048 Curated Studio Edition — Minimalist centered puzzle stage with slide-out side tabs for Achievements, Customization Studio, Lifetime Analytics, and Strategy Guide." />
   <title>2048 — Curated Studio Edition</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -78,18 +78,25 @@
     </svg>
   </div>
 
-  <!-- Symmetrical 3-Column Bento Workspace (Board Centered) -->
-  <div class="app-shell">
-    <!-- LEFT COLUMN: Telemetry, Action Deck, Power-Ups & Data Hub -->
-    <aside class="side-column left-column" aria-label="Telemetry and Game Actions">
-      <!-- Score & Live Telemetry Card -->
-      <div class="bento-card telemetry-card">
-        <div class="card-header-row">
-          <h2 class="card-heading">Live Telemetry</h2>
-          <span class="streak-pill" id="streak-pill" title="Consecutive Merge Streak">🔥 Streak ×0</span>
+  <!-- ========================================================================
+       CURATED CENTER STAGE (Clean, Uncluttered, Focused Front Design)
+       ======================================================================== -->
+  <div class="stage-wrapper">
+    <!-- Top Brand & Score Header -->
+    <header class="glass-panel hero-header">
+      <div class="brand-block">
+        <div class="title-line">
+          <h1 class="title">2048</h1>
+          <div class="meta-badges">
+            <span class="pill-badge" id="grid-badge">4×4</span>
+            <span class="pill-badge accent" id="mode-tag">Classic</span>
+          </div>
         </div>
+        <p class="subtitle">Slide &amp; merge tiles to reach <strong>2048</strong></p>
+      </div>
 
-        <div class="scores-grid">
+      <div class="header-right">
+        <div class="scores-row">
           <div class="score-box">
             <span class="score-label">SCORE</span>
             <span class="score-value" id="score">0</span>
@@ -100,358 +107,351 @@
             <span class="score-value" id="best-score">0</span>
           </div>
         </div>
-
-        <div class="stats-grid" aria-label="Session Metrics">
-          <div class="stat-pill">
-            <span class="stat-name">Moves</span>
-            <span class="stat-val" id="stat-moves">0</span>
-          </div>
-          <div class="stat-pill" id="time-pill">
-            <span class="stat-name" id="stat-time-label">Time</span>
-            <span class="stat-val" id="stat-time">00:00</span>
-          </div>
-          <div class="stat-pill">
-            <span class="stat-name">Pts/Move</span>
-            <span class="stat-val" id="stat-efficiency">0.0</span>
-          </div>
-        </div>
-
-        <div class="hint-banner" id="hint-banner" hidden>
-          <span class="hint-label">💡 Best Move:</span>
-          <strong class="hint-val" id="hint-text">—</strong>
-        </div>
-      </div>
-
-      <!-- Action & Tactical Power-Up Deck -->
-      <div class="bento-card actions-card">
-        <h2 class="card-heading">Command &amp; Power-Ups</h2>
-        <button id="restart-btn" class="btn btn-primary btn-block" title="Start a new game (R)">
-          ↻ New Game
+        <button id="mode-btn" class="btn btn-mode-wide" title="Toggle Dark / Light Mode (L)">
+          🌙 Dark Mode
         </button>
+      </div>
+    </header>
 
-        <div class="action-grid-2">
-          <button id="undo-btn" class="btn btn-secondary" disabled title="Undo last move (Z or U)">
-            ↶ Undo
-          </button>
-          <button id="hint-btn" class="btn btn-secondary" title="Suggest best move (H)">
-            💡 Hint
-          </button>
-          <button id="shuffle-btn" class="btn btn-secondary" title="Rearrange all tiles on board (X)">
-            🔀 Shuffle <span class="charge-badge" id="shuffle-count">1</span>
-          </button>
-          <button id="zap-btn" class="btn btn-secondary" title="Vaporize a lowest-value tile (C)">
-            ⚡ Zap Low <span class="charge-badge" id="zap-count">1</span>
-          </button>
-          <button id="ai-btn" class="btn btn-secondary" title="Toggle Auto-Play AI (P)" aria-pressed="false">
-            🤖 Auto-Play
-          </button>
-          <button id="sound-btn" class="btn btn-secondary" title="Toggle Sound Effects (M)" aria-pressed="true">
-            🔊 Sound
-          </button>
-        </div>
+    <!-- Sleek Command Dock + Integrated Milestone Progress Bar -->
+    <section class="glass-panel command-dock" aria-label="Game Controls">
+      <div class="dock-buttons">
+        <button id="restart-btn" class="btn btn-primary" title="Start a new game (R)">
+          ↻ New
+        </button>
+        <button id="undo-btn" class="btn btn-secondary" disabled title="Undo last move (Z or U)">
+          ↶ Undo
+        </button>
+        <button id="hint-btn" class="btn btn-secondary" title="Suggest best move (H)">
+          💡 Hint
+        </button>
+        <button id="shuffle-btn" class="btn btn-secondary" title="Shuffle tiles on board (X)">
+          🔀 <span class="charge-dot" id="shuffle-count">1</span>
+        </button>
+        <button id="zap-btn" class="btn btn-secondary" title="Zap a lowest-value tile (C)">
+          ⚡ <span class="charge-dot" id="zap-count">1</span>
+        </button>
+        <button id="ai-btn" class="btn btn-secondary" title="Toggle Auto-Play AI (P)" aria-pressed="false">
+          🤖 AI
+        </button>
+        <button id="sound-btn" class="btn btn-icon-only active" title="Toggle Sound Effects (M)" aria-pressed="true">
+          🔊
+        </button>
       </div>
 
-      <!-- Records, Achievements & Game Guide Launcher Card -->
-      <div class="bento-card hub-card">
-        <div class="card-header-row">
-          <h2 class="card-heading">Player Hub &amp; Guide</h2>
-          <span class="badge-counter" id="achievement-summary">🏆 0/12</span>
-        </div>
-        <p class="mode-desc" id="mode-desc">
-          <strong>Classic Endless:</strong> Merge matching tiles to reach 2048 and push your high score!
-        </p>
-        <div class="hub-buttons">
-          <button id="open-stats-btn" class="btn btn-secondary btn-sm" title="View Lifetime Analytics & Match History (G)">
-            📊 Data
-          </button>
-          <button id="open-badges-btn" class="btn btn-secondary btn-sm" title="View Achievements">
-            🏆 Badges
-          </button>
-          <button id="open-guide-btn" class="btn btn-secondary btn-sm" title="Read Rules, Lore & Strategy Guide (?)">
-            📖 Guide
-          </button>
-        </div>
+      <div class="progress-strip" title="Progress toward next milestone tile">
+        <div class="progress-fill" id="progress-fill" style="width: 12%"></div>
       </div>
-    </aside>
-
-    <!-- CENTER COLUMN: Brand Header, Milestone Progress, Game Board & Key Legend -->
-    <section class="center-column" aria-label="Main Game Stage">
-      <!-- Centered Brand & Mode Toggle Bar -->
-      <header class="bento-card stage-header">
-        <div class="brand-group">
-          <div class="title-wrap">
-            <h1 class="title">2048</h1>
-            <span class="grid-badge" id="grid-badge">4×4</span>
-            <span class="mode-tag" id="mode-tag">Classic</span>
-          </div>
-          <p class="subtitle">Join the tiles &amp; forge <strong>2048!</strong></p>
-        </div>
-
-        <div class="header-right-actions">
-          <button id="fx-btn" class="btn btn-icon" title="Toggle Celebration Particles" aria-pressed="true">
-            ✨
-          </button>
-          <button id="mode-btn" class="btn btn-mode" title="Toggle Dark / Light Mode (L)">
-            🌙 Dark Mode
-          </button>
-        </div>
-      </header>
-
-      <!-- Next Milestone Progress Bar -->
-      <div class="bento-card progress-card" aria-label="Milestone Progress">
-        <div class="progress-labels">
-          <span class="progress-current">Max Tile: <strong id="stat-max-tile">2</strong></span>
-          <span class="progress-goal" id="progress-goal-label">Next Goal: 128</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="progress-fill" style="width: 10%"></div>
-        </div>
-      </div>
-
-      <!-- 2048 Board -->
-      <main class="game-container" id="game-container" aria-label="2048 Game Board">
-        <!-- Game Over / Win / Blitz Overlay -->
-        <div class="game-message" id="game-message" role="dialog" aria-live="polite">
-          <p id="message-text"></p>
-          <div class="message-sub" id="message-sub"></div>
-          <div class="message-actions">
-            <button id="keep-playing-btn" class="btn btn-secondary">Keep going</button>
-            <button id="overlay-undo-btn" class="btn btn-secondary" hidden>↶ Undo Last</button>
-            <button id="try-again-btn" class="btn btn-primary">↻ Play Again</button>
-          </div>
-        </div>
-
-        <!-- Dynamic Background Grid -->
-        <div class="grid-container" id="grid-container"></div>
-
-        <!-- Active Tiles Layer -->
-        <div class="tile-container" id="tile-container"></div>
-
-        <!-- Celebration Particle Layer -->
-        <div class="particle-layer" id="particle-layer" aria-hidden="true"></div>
-      </main>
-
-      <!-- Compact Keyboard Legend -->
-      <footer class="stage-footer">
-        <div class="key-legend">
-          <span class="legend-item"><kbd>WASD</kbd>/<kbd>↑↓←→</kbd> Move</span>
-          <span class="legend-item"><kbd>L</kbd> Light/Dark</span>
-          <span class="legend-item"><kbd>T</kbd> Theme</span>
-          <span class="legend-item"><kbd>Z</kbd> Undo</span>
-          <span class="legend-item"><kbd>H</kbd> Hint</span>
-          <span class="legend-item"><kbd>X</kbd> Shuffle</span>
-          <span class="legend-item"><kbd>C</kbd> Zap</span>
-          <span class="legend-item"><kbd>G</kbd> Data</span>
-        </div>
-      </footer>
     </section>
 
-    <!-- RIGHT COLUMN: Customization Studio, Tile Vault & Strategy Insights -->
-    <aside class="side-column right-column" aria-label="Customization Studio and Tile Vault">
-      <!-- Studio Customization Card -->
-      <div class="bento-card settings-card">
-        <h2 class="card-heading">Customization Studio</h2>
+    <!-- Main 2048 Game Board -->
+    <main class="game-container" id="game-container" aria-label="2048 Game Board">
+      <!-- Floating Hint Pill Overlay -->
+      <div class="floating-hint" id="hint-banner" hidden>
+        <span>💡 Best Move:</span>
+        <strong id="hint-text">—</strong>
+      </div>
 
-        <div class="setting-field">
-          <label class="setting-label" for="gamemode-select">Game Mode</label>
-          <select id="gamemode-select" class="setting-select" title="Choose Game Ruleset">
-            <option value="classic" selected>Classic Endless</option>
-            <option value="blitz">⏱️ 2-Min Time Blitz</option>
-            <option value="zen">🧘 Zen Relax (No Lockout)</option>
-            <option value="hardcore">🔥 Hardcore Purist</option>
-          </select>
-        </div>
-
-        <div class="setting-field">
-          <label class="setting-label" for="theme-select">Color Palette (10 Themes)</label>
-          <select id="theme-select" class="setting-select" title="Select Color Theme (T to cycle)">
-            <option value="classic">Classic Warm</option>
-            <option value="ocean">Ocean Blue</option>
-            <option value="cyberpunk">Cyberpunk Neon</option>
-            <option value="emerald">Forest Emerald</option>
-            <option value="sunset">Crimson Sunset</option>
-            <option value="royal">Royal Amethyst</option>
-            <option value="sakura">Sakura Blossom</option>
-            <option value="nordic">Nordic Frost</option>
-            <option value="coffee">Mocha Espresso</option>
-            <option value="monochrome">Minimalist Ink</option>
-          </select>
-        </div>
-
-        <div class="setting-row-split">
-          <div class="setting-field">
-            <label class="setting-label" for="size-select">Board Grid</label>
-            <select id="size-select" class="setting-select" title="Select Board Dimensions">
-              <option value="3">3×3 Mini</option>
-              <option value="4" selected>4×4 Classic</option>
-              <option value="5">5×5 Big</option>
-              <option value="6">6×6 Giant</option>
-            </select>
-          </div>
-
-          <div class="setting-field">
-            <label class="setting-label" for="skin-select">Tile Skin</label>
-            <select id="skin-select" class="setting-select" title="Select Tile Symbol Style">
-              <option value="numbers" selected>Numbers (2048)</option>
-              <option value="exponents">Powers (2¹¹)</option>
-              <option value="roman">Roman (XI)</option>
-              <option value="cosmic">Cosmic Icons</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="setting-field">
-          <label class="setting-label" for="backdrop-select">Backdrop Art</label>
-          <select id="backdrop-select" class="setting-select" title="Select Background Pattern">
-            <option value="spirals" selected>Spirals &amp; Doodles</option>
-            <option value="constellations">Star Constellations</option>
-            <option value="waves">Zen Topo Waves</option>
-            <option value="minimal">Clean Gradient</option>
-          </select>
-        </div>
-
-        <div class="setting-row-split">
-          <div class="setting-field">
-            <label class="setting-label" for="shape-select">Tile Shape</label>
-            <select id="shape-select" class="setting-select" title="Select Tile Corner Style">
-              <option value="rounded" selected>Rounded</option>
-              <option value="sharp">Crisp Sharp</option>
-              <option value="pill">Soft Bubble</option>
-            </select>
-          </div>
-
-          <div class="setting-field">
-            <label class="setting-label" for="speed-select">Motion</label>
-            <select id="speed-select" class="setting-select" title="Select Animation Speed">
-              <option value="fast">Fast</option>
-              <option value="normal" selected>Normal</option>
-              <option value="relaxed">Relaxed</option>
-            </select>
-          </div>
+      <!-- Game Over / Win / Blitz Overlay -->
+      <div class="game-message" id="game-message" role="dialog" aria-live="polite">
+        <p id="message-text"></p>
+        <div class="message-sub" id="message-sub"></div>
+        <div class="message-actions">
+          <button id="keep-playing-btn" class="btn btn-secondary">Keep going</button>
+          <button id="overlay-undo-btn" class="btn btn-secondary" hidden>↶ Undo Last</button>
+          <button id="try-again-btn" class="btn btn-primary">↻ Play Again</button>
         </div>
       </div>
 
-      <!-- Session Tile Progression Vault & Pro Tips Card -->
-      <div class="bento-card vault-card">
-        <div class="card-header-row">
-          <h2 class="card-heading">Run Tile Progression</h2>
-          <span class="vault-count" id="vault-count">1/11</span>
-        </div>
-        <div class="vault-grid" id="vault-grid" aria-label="Unlocked Tiles in Current Game"></div>
+      <!-- Dynamic Background Grid -->
+      <div class="grid-container" id="grid-container"></div>
 
-        <div class="tip-box">
-          <div class="tip-header">
-            <span class="tip-title">💡 Strategy &amp; Trivia</span>
-            <button id="next-tip-btn" class="tip-next-btn" title="Next Strategy Tip">↻ Next</button>
+      <!-- Active Tiles Layer -->
+      <div class="tile-container" id="tile-container"></div>
+
+      <!-- Celebration Particle Layer -->
+      <div class="particle-layer" id="particle-layer" aria-hidden="true"></div>
+    </main>
+
+    <!-- Minimalist Telemetry Footer Strip -->
+    <footer class="glass-panel telemetry-strip" aria-label="Live Session Telemetry">
+      <div class="tele-item">
+        <span class="tele-label">Moves</span>
+        <strong class="tele-val" id="stat-moves">0</strong>
+      </div>
+      <div class="tele-divider"></div>
+      <div class="tele-item" id="time-pill">
+        <span class="tele-label" id="stat-time-label">Time</span>
+        <strong class="tele-val" id="stat-time">00:00</strong>
+      </div>
+      <div class="tele-divider"></div>
+      <div class="tele-item">
+        <span class="tele-label">Streak</span>
+        <strong class="tele-val" id="streak-pill">🔥 ×0</strong>
+      </div>
+      <div class="tele-divider"></div>
+      <div class="tele-item">
+        <span class="tele-label" id="progress-goal-label">Goal 128</span>
+        <strong class="tele-val" id="stat-max-tile">2</strong>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ========================================================================
+       SIDE TABS RAIL (Docked on Right Edge of Screen)
+       ======================================================================== -->
+  <nav class="side-tabs-rail" aria-label="Side Panels">
+    <button class="side-tab-btn" data-drawer-tab="badges" title="Achievements & Milestones (B)">
+      <span class="side-tab-icon">🏆</span>
+      <span class="side-tab-label">Achievements</span>
+      <span class="side-tab-badge" id="achievement-summary">0/12</span>
+      <span class="side-tab-dot" id="badge-notify-dot" hidden></span>
+    </button>
+
+    <button class="side-tab-btn" data-drawer-tab="studio" title="Theme & Customization Studio (O)">
+      <span class="side-tab-icon">🎨</span>
+      <span class="side-tab-label">Studio</span>
+    </button>
+
+    <button class="side-tab-btn" data-drawer-tab="stats" title="Analytics, Tile Vault & History (G)">
+      <span class="side-tab-icon">📊</span>
+      <span class="side-tab-label">Analytics</span>
+    </button>
+
+    <button class="side-tab-btn" data-drawer-tab="guide" title="Strategy Guide & Shortcuts (?)">
+      <span class="side-tab-icon">📖</span>
+      <span class="side-tab-label">Guide</span>
+    </button>
+  </nav>
+
+  <!-- Subtle Scrim for Mobile / Narrow Screens when Side Drawer is Open -->
+  <div class="drawer-scrim" id="drawer-scrim" hidden></div>
+
+  <!-- ========================================================================
+       SLIDE-OUT SIDE DRAWER (Achievements, Studio, Analytics & Guide)
+       ======================================================================== -->
+  <aside class="side-drawer" id="side-drawer" aria-hidden="true" aria-label="Side Panel Drawer">
+    <div class="drawer-header">
+      <div class="drawer-nav-pills" role="tablist">
+        <button class="drawer-pill active" data-drawer-tab="badges" role="tab" aria-selected="true">🏆 Badges</button>
+        <button class="drawer-pill" data-drawer-tab="studio" role="tab" aria-selected="false">🎨 Studio</button>
+        <button class="drawer-pill" data-drawer-tab="stats" role="tab" aria-selected="false">📊 Data</button>
+        <button class="drawer-pill" data-drawer-tab="guide" role="tab" aria-selected="false">📖 Guide</button>
+      </div>
+      <button id="close-drawer-btn" class="btn btn-icon-only" aria-label="Close Side Panel" title="Close (Esc)">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- PANEL 1: ACHIEVEMENTS -->
+      <section class="drawer-panel" id="panel-badges" role="tabpanel">
+        <div class="panel-hero-box">
+          <div class="panel-hero-row">
+            <h2 class="panel-title">Achievements</h2>
+            <span class="panel-pill" id="ach-pct-label">0% Complete</span>
+          </div>
+          <div class="ach-progress-track">
+            <div class="ach-progress-fill" id="ach-progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="ach-filter-row">
+            <button class="filter-chip active" data-ach-filter="all">All (12)</button>
+            <button class="filter-chip" data-ach-filter="unlocked">Unlocked</button>
+            <button class="filter-chip" data-ach-filter="locked">Locked</button>
+          </div>
+        </div>
+
+        <div class="achievements-list" id="achievements-grid"></div>
+      </section>
+
+      <!-- PANEL 2: CUSTOMIZATION STUDIO -->
+      <section class="drawer-panel" id="panel-studio" role="tabpanel" hidden>
+        <div class="panel-hero-box">
+          <h2 class="panel-title">Customization Studio</h2>
+          <p class="panel-desc" id="mode-desc">
+            <strong>Classic Endless:</strong> Merge matching tiles to reach 2048 and push your high score!
+          </p>
+        </div>
+
+        <div class="studio-form">
+          <div class="setting-field">
+            <label class="setting-label" for="gamemode-select">Game Mode</label>
+            <select id="gamemode-select" class="setting-select">
+              <option value="classic" selected>Classic Endless</option>
+              <option value="blitz">⏱️ 2-Min Time Blitz</option>
+              <option value="zen">🧘 Zen Relax (No Lockout)</option>
+              <option value="hardcore">🔥 Hardcore Purist</option>
+            </select>
+          </div>
+
+          <div class="setting-field">
+            <label class="setting-label" for="theme-select">Color Palette (10 Themes)</label>
+            <select id="theme-select" class="setting-select">
+              <option value="classic">Classic Warm</option>
+              <option value="ocean">Ocean Blue</option>
+              <option value="cyberpunk">Cyberpunk Neon</option>
+              <option value="emerald">Forest Emerald</option>
+              <option value="sunset">Crimson Sunset</option>
+              <option value="royal">Royal Amethyst</option>
+              <option value="sakura">Sakura Blossom</option>
+              <option value="nordic">Nordic Frost</option>
+              <option value="coffee">Mocha Espresso</option>
+              <option value="monochrome">Minimalist Ink</option>
+            </select>
+          </div>
+
+          <div class="setting-row-2">
+            <div class="setting-field">
+              <label class="setting-label" for="size-select">Board Grid</label>
+              <select id="size-select" class="setting-select">
+                <option value="3">3×3 Mini</option>
+                <option value="4" selected>4×4 Classic</option>
+                <option value="5">5×5 Big</option>
+                <option value="6">6×6 Giant</option>
+              </select>
+            </div>
+
+            <div class="setting-field">
+              <label class="setting-label" for="skin-select">Tile Skin</label>
+              <select id="skin-select" class="setting-select">
+                <option value="numbers" selected>Numbers (2048)</option>
+                <option value="exponents">Powers (2¹¹)</option>
+                <option value="roman">Roman (XI)</option>
+                <option value="cosmic">Cosmic Icons</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-field">
+            <label class="setting-label" for="backdrop-select">Backdrop Art</label>
+            <select id="backdrop-select" class="setting-select">
+              <option value="spirals" selected>Spirals &amp; Doodles</option>
+              <option value="constellations">Star Constellations</option>
+              <option value="waves">Zen Topo Waves</option>
+              <option value="minimal">Clean Gradient</option>
+            </select>
+          </div>
+
+          <div class="setting-row-2">
+            <div class="setting-field">
+              <label class="setting-label" for="shape-select">Tile Shape</label>
+              <select id="shape-select" class="setting-select">
+                <option value="rounded" selected>Rounded</option>
+                <option value="sharp">Crisp Sharp</option>
+                <option value="pill">Soft Bubble</option>
+              </select>
+            </div>
+
+            <div class="setting-field">
+              <label class="setting-label" for="speed-select">Motion Speed</label>
+              <select id="speed-select" class="setting-select">
+                <option value="fast">Fast</option>
+                <option value="normal" selected>Normal</option>
+                <option value="relaxed">Relaxed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="studio-toggles">
+            <button id="fx-btn" class="btn btn-secondary btn-block active" aria-pressed="true">
+              ✨ Celebration Particles: ON
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 3: ANALYTICS, RUN VAULT & HISTORY -->
+      <section class="drawer-panel" id="panel-stats" role="tabpanel" hidden>
+        <div class="panel-hero-box">
+          <div class="panel-hero-row">
+            <h2 class="panel-title">Current Run Vault</h2>
+            <span class="panel-pill" id="vault-count">1/11</span>
+          </div>
+          <div class="vault-grid" id="vault-grid"></div>
+          <div class="efficiency-line">
+            <span>Session Efficiency:</span>
+            <strong id="stat-efficiency">0.0 pts/move</strong>
+          </div>
+        </div>
+
+        <h3 class="drawer-subhead">Lifetime Telemetry</h3>
+        <div class="kpi-grid" id="kpi-grid"></div>
+
+        <h3 class="drawer-subhead">Lifetime Tile Forge Counts</h3>
+        <div class="forge-matrix" id="forge-matrix"></div>
+
+        <h3 class="drawer-subhead">Recent Match History</h3>
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Mode</th>
+                <th>Grid</th>
+                <th>Score</th>
+                <th>Max</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="data-actions-col">
+          <div class="setting-row-2">
+            <button id="export-data-btn" class="btn btn-secondary btn-sm">⬇ Export JSON</button>
+            <button id="import-data-btn" class="btn btn-secondary btn-sm">⬆ Import JSON</button>
+          </div>
+          <button id="reset-data-btn" class="btn btn-secondary btn-sm btn-danger">🗑 Reset Lifetime Data</button>
+          <input type="file" id="import-file-input" accept=".json" hidden />
+        </div>
+      </section>
+
+      <!-- PANEL 4: STRATEGY GUIDE & SHORTCUTS -->
+      <section class="drawer-panel" id="panel-guide" role="tabpanel" hidden>
+        <div class="tip-card">
+          <div class="panel-hero-row">
+            <span class="tip-badge">💡 Pro Tip</span>
+            <button id="next-tip-btn" class="tip-next-btn">↻ Next Tip</button>
           </div>
           <p class="tip-text" id="tip-text">
             Anchor your highest-value tile in one corner and keep that row full so it never gets pushed out.
           </p>
         </div>
-      </div>
-    </aside>
-  </div>
 
-  <!-- Player Hub Modal (Analytics & History, Achievements, Guide & Lore) -->
-  <div class="modal-backdrop" id="hub-modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-tabs" role="tablist">
-          <button class="modal-tab active" data-tab="stats" role="tab" aria-selected="true">📊 Analytics &amp; Data</button>
-          <button class="modal-tab" data-tab="badges" role="tab" aria-selected="false">🏆 Achievements</button>
-          <button class="modal-tab" data-tab="guide" role="tab" aria-selected="false">📖 Guide &amp; Strategy</button>
-        </div>
-        <button id="close-modal-btn" class="btn btn-icon" aria-label="Close Modal">✕</button>
-      </div>
-
-      <div class="modal-body">
-        <h2 id="modal-title" class="sr-only">Player Hub</h2>
-
-        <!-- TAB 1: Analytics & Data -->
-        <div class="tab-panel active" id="tab-stats" role="tabpanel">
-          <div class="kpi-grid" id="kpi-grid"></div>
-
-          <h3 class="section-subtitle">Lifetime Tile Forge Counts</h3>
-          <p class="section-caption">Total number of times each tile tier has been forged across all sessions:</p>
-          <div class="forge-matrix" id="forge-matrix"></div>
-
-          <h3 class="section-subtitle">Recent Match History (Last 10 Runs)</h3>
-          <div class="history-table-wrap">
-            <table class="history-table">
-              <thead>
-                <tr>
-                  <th>Mode</th>
-                  <th>Grid</th>
-                  <th>Score</th>
-                  <th>Max Tile</th>
-                  <th>Moves</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody id="history-tbody"></tbody>
-            </table>
+        <div class="guide-stack">
+          <div class="guide-box">
+            <h3>About 2048 — Studio Edition (v2.1.0)</h3>
+            <p>
+              Slide tiles across the grid using arrow keys, WASD, or touch swipes. Matching tiles fuse into the next power of two (<code>2¹ → 2¹¹</code>), adding each merged value to your score.
+            </p>
           </div>
 
-          <div class="data-actions-bar">
-            <button id="export-data-btn" class="btn btn-secondary btn-sm">⬇ Export JSON Backup</button>
-            <button id="import-data-btn" class="btn btn-secondary btn-sm">⬆ Import JSON Backup</button>
-            <button id="reset-data-btn" class="btn btn-secondary btn-sm btn-danger">🗑 Reset Lifetime Stats</button>
-            <input type="file" id="import-file-input" accept=".json" hidden />
+          <div class="guide-box">
+            <h3>🧠 Grandmaster Strategy</h3>
+            <ol>
+              <li><strong>Corner Anchor:</strong> Lock your largest tile in one corner and keep its edge row filled.</li>
+              <li><strong>Snake Chain:</strong> Build descending ranks in a serpentine line so merges cascade smoothly.</li>
+              <li><strong>Smart Power-Ups:</strong> Save <code>🔀 Shuffle</code> and <code>⚡ Zap</code> for endgame gridlock; forging <code>512+</code> awards bonus charges!</li>
+            </ol>
           </div>
-        </div>
 
-        <!-- TAB 2: Achievements -->
-        <div class="tab-panel" id="tab-badges" role="tabpanel" hidden>
-          <p class="section-caption">Unlock milestones across Classic, Blitz, Zen, and Hardcore modes:</p>
-          <div class="achievements-grid" id="achievements-grid"></div>
-        </div>
-
-        <!-- TAB 3: Game Description, Rules & Pro Strategy -->
-        <div class="tab-panel" id="tab-guide" role="tabpanel" hidden>
-          <div class="guide-content">
-            <div class="guide-block">
-              <h3>About 2048 — Curated Studio Edition (v2.0.2)</h3>
-              <p>
-                Originally inspired by Gabriele Cirulli's 2014 classic, <strong>2048</strong> is a deceptively simple game of exponential growth ($2^1$ through $2^{11}$ and beyond). Every slide shifts all tiles across the grid; colliding tiles of identical rank fuse into the next power of two, adding the newly forged tile's value to your score.
-              </p>
-            </div>
-
-            <div class="guide-grid-2">
-              <div class="guide-block">
-                <h3>🎮 Game Modes</h3>
-                <ul>
-                  <li><strong>Classic Endless:</strong> Traditional rules (90% <code>2</code>, 10% <code>4</code> spawns). Win at <code>2048</code> and keep going to <code>4096+</code>.</li>
-                  <li><strong>⏱️ 2-Min Time Blitz:</strong> Race against a 120-second clock to rack up the highest score before time expires.</li>
-                  <li><strong>🧘 Zen Relax:</strong> Stress-free mode with unlimited Undos, Shuffles, and Zaps — never get locked out!</li>
-                  <li><strong>🔥 Hardcore Purist:</strong> 25% <code>4</code> spawn rate with Undo, Hints, AI, and Power-Ups disabled.</li>
-                </ul>
-              </div>
-
-              <div class="guide-block">
-                <h3>⚡ Power-Ups &amp; Streaks</h3>
-                <ul>
-                  <li><strong>🔥 Merge Streak:</strong> Consecutive moves that produce at least one merge build your Streak counter.</li>
-                  <li><strong>🔀 Shuffle (<code>X</code>):</strong> Rearranges all existing tiles into new positions when your board is gridlocked.</li>
-                  <li><strong>⚡ Zap Low (<code>C</code>):</strong> Vaporizes one lowest-ranking tile on the board to open breathing room.</li>
-                  <li><strong>Bonus Charges:</strong> Forging a <code>512</code>, <code>1024</code>, or <code>2048</code> tile awards <code>+1</code> charge (max 3).</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="guide-block">
-              <h3>🧠 Grandmaster Strategy Guide</h3>
-              <ol>
-                <li><strong>Pick One Corner &amp; Lock It:</strong> Choose a corner (e.g., Top-Left) for your highest tile. Restrict yourself to 3 directions (e.g., Up, Left, Right) and avoid pressing Down unless forced.</li>
-                <li><strong>Build a Snake Chain:</strong> Arrange descending values in a serpentine path (<code>2048 → 1024 → 512 → 256</code> along the top row, then snaking into the second row) so cascades happen in sequence.</li>
-                <li><strong>Keep Your Anchor Row Packed:</strong> Fill all 4 cells of your anchor edge before sliding parallel to it so a newly spawned <code>2</code> cannot slip into your corner.</li>
-                <li><strong>Save Power-Ups for Endgame:</strong> Hold your <code>Zap</code> and <code>Shuffle</code> charges for when forging <code>1024 → 2048</code> leaves low tiles trapped between giants.</li>
-              </ol>
+          <div class="guide-box">
+            <h3>⌨️ Keyboard Shortcuts</h3>
+            <div class="shortcut-list">
+              <div><kbd>WASD</kbd> / <kbd>Arrows</kbd> <span>Slide Tiles</span></div>
+              <div><kbd>L</kbd> <span>Dark / Light Mode</span></div>
+              <div><kbd>T</kbd> <span>Cycle Color Theme</span></div>
+              <div><kbd>Z</kbd> / <kbd>U</kbd> <span>Undo Last Move</span></div>
+              <div><kbd>H</kbd> <span>Show Best Move Hint</span></div>
+              <div><kbd>X</kbd> / <kbd>C</kbd> <span>Shuffle / Zap Tile</span></div>
+              <div><kbd>P</kbd> <span>Toggle Auto-Play AI</span></div>
+              <div><kbd>B</kbd> / <kbd>O</kbd> / <kbd>G</kbd> <span>Badges / Studio / Stats</span></div>
+              <div><kbd>?</kbd> / <kbd>Esc</kbd> <span>Guide / Close Drawer</span></div>
+              <div><kbd>R</kbd> <span>Start New Game</span></div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
-  </div>
+  </aside>
 
   <!-- Achievement & Action Toast Container -->
   <div class="toast-container" id="toast-container" aria-live="polite"></div>

@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Version tag for the GitHub Release (e.g., v2.0.2)"
+        description: "Version tag for the GitHub Release (e.g., v2.1.0)"
         required: false
-        default: "v2.0.2"
+        default: "v2.1.0"
 
 permissions:
   contents: write
@@ -42,12 +42,12 @@ jobs:
           elif [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
             VERSION="${{ github.event.inputs.release_tag }}"
           else
-            LATEST_V2=$(git tag -l "v2.0.*" --sort=-v:refname | head -n 1)
-            if [[ -z "$LATEST_V2" || "$LATEST_V2" == "v2.0.1" ]]; then
-              VERSION="v2.0.2"
+            LATEST_V21=$(git tag -l "v2.1.*" --sort=-v:refname | head -n 1)
+            if [[ -z "$LATEST_V21" ]]; then
+              VERSION="v2.1.0"
             else
-              PATCH="${LATEST_V2##*.}"
-              VERSION="v2.0.$((PATCH + 1))"
+              PATCH="${LATEST_V21##*.}"
+              VERSION="v2.1.$((PATCH + 1))"
             fi
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
@@ -113,17 +113,17 @@ jobs:
           body: |
             ## ✨ 2048 — Curated Studio Edition (`${{ needs.package-app.outputs.version }}`)
 
-            ### 🔧 Release & Pipeline Updates (`v2.0.2`)
-            - Streamlined CI/CD release pipeline for full compatibility with both **Private** and **Public** repositories (removed unsupported GitHub Pages deployment check so all workflow checks pass cleanly).
-            - Automatically marks the newest app bundle as **Latest Release**.
+            ### 🎨 What's New in `v2.1.0` — Minimalist Front Stage & Side-Tab Drawer
+            - **Uncluttered Centered Stage:** Refined the front screen to showcase only the essentials — Hero Score Header, sleek Command Dock with integrated milestone progress bar, `464px × 464px` 2048 board, and slim live Telemetry Footer.
+            - **Docked Side Tabs & Slide-Out Glass Drawer:** Moved secondary tools off the main stage into right-edge side tabs (**🏆 Achievements**, **🎨 Studio**, **📊 Analytics**, **📖 Guide**) that glide open smoothly without interrupting active gameplay.
+            - **Upgraded Achievements Tab:** Added live `0/12` tab counter, new-badge notification dot, completion progress bar, and `All` / `Unlocked` / `Locked` filter chips.
+            - **Release-Only Pipeline (No Deployment):** Cleanly builds and publishes downloadable release bundles without any GitHub Pages deployment job.
 
-            ### 🚀 Studio Edition Highlights
-            - **Symmetrical 3-Column Bento Workspace:** Centered game board flanked by Live Telemetry, Power-Ups, Customization Studio, and Run Tile Progression Vault.
+            ### 🚀 Core Studio Features
             - **10 Themes × Light & Dark Modes (20 Palettes):** *Classic Warm*, *Ocean Blue*, *Cyberpunk Neon*, *Forest Emerald*, *Crimson Sunset*, *Royal Amethyst*, *Sakura Blossom*, *Nordic Frost*, *Mocha Espresso*, and *Minimalist Ink*.
             - **4 Playable Game Modes:** *Classic Endless*, *⏱️ 2-Min Time Blitz*, *🧘 Zen Relax*, and *🔥 Hardcore Purist*.
-            - **Tactical Power-Ups & Streaks:** *🔀 Shuffle*, *⚡ Zap Low*, milestone bonus charges, and live *🔥 Merge Streak* tracking.
-            - **Deep Visual Studio:** 4 Tile Skins (*Numbers*, *Powers 2ⁿ*, *Roman Ranks*, *Cosmic Icons*), 4 SVG Backdrops (*Spirals & Doodles*, *Star Constellations*, *Zen Topo Waves*, *Clean Gradient*), 3 Tile Shapes, 3 Motion Speeds, and celebration particles.
-            - **Player Hub:** Lifetime Analytics, Tile Forge Matrix, 10-Run Match History, 12 Unlockable Achievements, Grandmaster Strategy Guide, and JSON Save Export/Import.
+            - **Tactical Power-Ups & AI:** *🔀 Shuffle*, *⚡ Zap Low*, milestone bonus charges, *🔥 Merge Streak*, *💡 Smart Hint*, and *🤖 Auto-Play AI*.
+            - **Visual Studio & Analytics:** 4 Tile Skins (*Numbers*, *Powers 2ⁿ*, *Roman*, *Cosmic*), 4 SVG Backdrops (*Spirals & Doodles*, *Constellations*, *Topo Waves*, *Clean Gradient*), 3 Tile Shapes, Run Tile Vault, Lifetime Forge Matrix, Match History, and JSON Export/Import.
 
             ### 📦 Download Options
             - **`2048-standalone.html`** — Single-file offline app (open directly in any browser, no extraction required).
