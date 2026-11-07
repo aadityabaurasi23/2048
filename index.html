@@ -3,22 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>2048 — Custom Edition</title>
+  <title>2048 — Curated Edition</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <div class="title-group">
-        <div class="title-row">
-          <h1 class="title">2048</h1>
-          <span class="grid-badge" id="grid-badge">4×4</span>
+  <!-- Theme-Adaptive Spiral & Doodle Background Canvas -->
+  <div class="doodle-backdrop" aria-hidden="true">
+    <svg class="doodle-pattern" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <defs>
+        <pattern id="doodle-tile" width="260" height="260" patternUnits="userSpaceOnUse">
+          <!-- Large Archimedean Spiral -->
+          <path class="doodle-stroke" d="M 65 65 m 0 0 a 6 6 0 1 0 12 0 a 12 12 0 1 0 -24 0 a 18 18 0 1 0 36 0 a 24 24 0 1 0 -48 0 a 30 30 0 1 0 60 0" />
+          <!-- Secondary Spiral Bottom-Right -->
+          <path class="doodle-stroke" d="M 195 195 m 0 0 a 5 5 0 1 1 -10 0 a 11 11 0 1 1 22 0 a 17 17 0 1 1 -34 0 a 23 23 0 1 1 46 0" />
+          <!-- Floating Rounded Tile Doodles -->
+          <rect class="doodle-stroke" x="170" y="28" width="44" height="44" rx="10" transform="rotate(14 192 50)" />
+          <rect class="doodle-stroke-dashed" x="178" y="36" width="28" height="28" rx="6" transform="rotate(14 192 50)" />
+          <rect class="doodle-stroke" x="26" y="168" width="48" height="48" rx="11" transform="rotate(-12 50 192)" />
+          <!-- Swirl Wave & Squiggles -->
+          <path class="doodle-stroke" d="M 110 130 Q 125 112, 140 130 T 170 130" />
+          <path class="doodle-stroke" d="M 18 118 C 32 102, 52 134, 66 118" />
+          <path class="doodle-stroke" d="M 122 225 C 135 210, 148 240, 162 225" />
+          <!-- Sparkles / Plus Doodles -->
+          <path class="doodle-stroke" d="M 130 42 L 130 58 M 122 50 L 138 50" />
+          <path class="doodle-stroke" d="M 232 118 L 232 132 M 225 125 L 239 125" />
+          <path class="doodle-stroke" d="M 96 172 L 96 184 M 90 178 L 102 178" />
+          <!-- Dotted Rings & Orbs -->
+          <circle class="doodle-stroke-dashed" cx="130" cy="130" r="22" />
+          <circle class="doodle-fill" cx="115" cy="88" r="3.5" />
+          <circle class="doodle-fill" cx="225" cy="78" r="4" />
+          <circle class="doodle-fill" cx="78" cy="232" r="3.5" />
+          <circle class="doodle-fill" cx="152" cy="172" r="3" />
+          <!-- Subtle Number Glyphs -->
+          <text class="doodle-text" x="184" y="56" transform="rotate(14 192 50)">2</text>
+          <text class="doodle-text" x="43" y="198" transform="rotate(-12 50 192)">4</text>
+          <text class="doodle-text-lg" x="16" y="34">2048</text>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#doodle-tile)" />
+    </svg>
+
+    <!-- Ambient Corner Decorative Spirals -->
+    <svg class="corner-spiral spiral-tl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100,100 m0,0 a8,8 0 1,0 16,0 a16,16 0 1,0 -32,0 a24,24 0 1,0 48,0 a32,32 0 1,0 -64,0 a40,40 0 1,0 80,0 a48,48 0 1,0 -96,0 a56,56 0 1,0 112,0 a64,64 0 1,0 -128,0 a72,72 0 1,0 144,0" fill="none" />
+    </svg>
+    <svg class="corner-spiral spiral-br" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100,100 m0,0 a8,8 0 1,1 -16,0 a16,16 0 1,1 32,0 a24,24 0 1,1 -48,0 a32,32 0 1,1 64,0 a40,40 0 1,1 -80,0 a48,48 0 1,1 96,0 a56,56 0 1,1 -112,0 a64,64 0 1,1 128,0 a72,72 0 1,1 -144,0" fill="none" />
+    </svg>
+  </div>
+
+  <!-- Curated Two-Column Bento Workspace -->
+  <div class="app-shell">
+    <!-- Left Column: Brand, Scoreboard, Action Deck & Customizations -->
+    <aside class="control-column" aria-label="Scoreboard and Game Controls">
+      <!-- Brand Card -->
+      <div class="bento-card brand-card">
+        <div class="brand-top">
+          <div class="title-wrap">
+            <h1 class="title">2048</h1>
+            <span class="grid-badge" id="grid-badge">4×4</span>
+          </div>
+          <button id="mode-btn" class="btn btn-mode" title="Toggle Dark / Light Mode (L)">
+            🌙 Dark Mode
+          </button>
         </div>
-        <p class="subtitle">Join the numbers and reach the <strong>2048 tile!</strong></p>
+        <p class="subtitle">Merge matching numbers to reach the <strong>2048 tile!</strong></p>
       </div>
 
-      <div class="scores-and-actions">
-        <div class="scores-container">
+      <!-- Score & Live Telemetry Card -->
+      <div class="bento-card telemetry-card">
+        <div class="scores-grid">
           <div class="score-box">
             <span class="score-label">SCORE</span>
             <span class="score-value" id="score">0</span>
@@ -29,29 +83,57 @@
             <span class="score-value" id="best-score">0</span>
           </div>
         </div>
-        <div class="controls-row">
-          <button id="mode-btn" class="btn btn-secondary" title="Toggle Dark / Light Mode (L)">
-            🌙 Dark Mode
+
+        <div class="stats-grid" aria-label="Live Game Statistics">
+          <div class="stat-pill">
+            <span class="stat-name">Moves</span>
+            <span class="stat-val" id="stat-moves">0</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-name">Time</span>
+            <span class="stat-val" id="stat-time">00:00</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-name">Max Tile</span>
+            <span class="stat-val" id="stat-max-tile">0</span>
+          </div>
+        </div>
+
+        <div class="hint-banner" id="hint-banner" hidden>
+          <span class="hint-label">💡 Suggested Move:</span>
+          <strong class="hint-val" id="hint-text">—</strong>
+        </div>
+      </div>
+
+      <!-- Action Deck Card -->
+      <div class="bento-card actions-card">
+        <div class="primary-actions">
+          <button id="restart-btn" class="btn btn-primary btn-block" title="Start a new game (R)">
+            ↻ New Game
           </button>
+        </div>
+        <div class="secondary-actions">
           <button id="undo-btn" class="btn btn-secondary" disabled title="Undo last move (Z or U)">
-            Undo
+            ↶ Undo
           </button>
           <button id="hint-btn" class="btn btn-secondary" title="Suggest best move (H)">
-            Hint
+            💡 Hint
           </button>
-          <button id="restart-btn" class="btn btn-primary" title="Start a new game (R)">
-            New Game
+          <button id="ai-btn" class="btn btn-secondary" title="Toggle Auto-Play AI (P)" aria-pressed="false">
+            🤖 Auto-Play
+          </button>
+          <button id="sound-btn" class="btn btn-secondary" title="Toggle Sound Effects (M)" aria-pressed="true">
+            🔊 Sound
           </button>
         </div>
       </div>
-    </header>
 
-    <!-- Customization & Feature Toolbar -->
-    <section class="toolbar" aria-label="Game Customizations">
-      <div class="toolbar-row">
-        <div class="toolbar-group">
-          <label class="toolbar-label" for="theme-select">Theme</label>
-          <select id="theme-select" class="toolbar-select" title="Select Color Theme (T to cycle)">
+      <!-- Studio Customization Card -->
+      <div class="bento-card settings-card" aria-label="Game Customizations">
+        <h2 class="card-heading">Customization Studio</h2>
+        <div class="setting-field">
+          <label class="setting-label" for="theme-select">Color Palette</label>
+          <select id="theme-select" class="setting-select" title="Select Color Theme (T to cycle)">
             <option value="classic">Classic Warm</option>
             <option value="ocean">Ocean Blue</option>
             <option value="cyberpunk">Cyberpunk Neon</option>
@@ -61,90 +143,61 @@
           </select>
         </div>
 
-        <div class="toolbar-group">
-          <label class="toolbar-label" for="size-select">Grid</label>
-          <select id="size-select" class="toolbar-select" title="Select Board Size">
-            <option value="3">3×3 Mini</option>
-            <option value="4" selected>4×4 Classic</option>
-            <option value="5">5×5 Big</option>
-            <option value="6">6×6 Giant</option>
-          </select>
-        </div>
+        <div class="setting-row-split">
+          <div class="setting-field">
+            <label class="setting-label" for="size-select">Board Grid</label>
+            <select id="size-select" class="setting-select" title="Select Board Size">
+              <option value="3">3×3 Mini</option>
+              <option value="4" selected>4×4 Classic</option>
+              <option value="5">5×5 Big</option>
+              <option value="6">6×6 Giant</option>
+            </select>
+          </div>
 
-        <div class="toolbar-group">
-          <label class="toolbar-label" for="speed-select">Anim</label>
-          <select id="speed-select" class="toolbar-select" title="Tile Animation Speed">
-            <option value="fast">Fast</option>
-            <option value="normal" selected>Normal</option>
-            <option value="relaxed">Relaxed</option>
-          </select>
+          <div class="setting-field">
+            <label class="setting-label" for="speed-select">Motion</label>
+            <select id="speed-select" class="setting-select" title="Tile Animation Speed">
+              <option value="fast">Fast</option>
+              <option value="normal" selected>Normal</option>
+              <option value="relaxed">Relaxed</option>
+            </select>
+          </div>
         </div>
       </div>
+    </aside>
 
-      <div class="toolbar-actions">
-        <button id="ai-btn" class="btn btn-chip" title="Toggle Auto-Play AI (A)" aria-pressed="false">
-          🤖 Auto-Play
-        </button>
-        <button id="sound-btn" class="btn btn-chip" title="Toggle Sound Effects (M)" aria-pressed="true">
-          🔊 Sound
-        </button>
-      </div>
+    <!-- Right Column: Game Stage & Controls Legend -->
+    <section class="stage-column">
+      <main class="game-container" id="game-container" aria-label="2048 Game Board">
+        <!-- Game Over / Win Overlay -->
+        <div class="game-message" id="game-message" role="dialog" aria-live="polite">
+          <p id="message-text"></p>
+          <div class="message-sub" id="message-sub"></div>
+          <div class="message-actions">
+            <button id="keep-playing-btn" class="btn btn-secondary">Keep going</button>
+            <button id="try-again-btn" class="btn btn-primary">Try again</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Background Grid -->
+        <div class="grid-container" id="grid-container"></div>
+
+        <!-- Active Tiles Layer -->
+        <div class="tile-container" id="tile-container"></div>
+      </main>
+
+      <footer class="stage-footer">
+        <div class="key-legend">
+          <span class="legend-item"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or <kbd>WASD</kbd> Move</span>
+          <span class="legend-item"><kbd>L</kbd> Light/Dark</span>
+          <span class="legend-item"><kbd>T</kbd> Theme</span>
+          <span class="legend-item"><kbd>Z</kbd> Undo</span>
+          <span class="legend-item"><kbd>H</kbd> Hint</span>
+          <span class="legend-item"><kbd>P</kbd> Auto</span>
+          <span class="legend-item"><kbd>R</kbd> Reset</span>
+        </div>
+      </footer>
     </section>
-
-    <!-- Live Game Stats Bar -->
-    <section class="stats-bar" aria-label="Live Game Statistics">
-      <div class="stat-pill">
-        <span class="stat-name">Moves</span>
-        <span class="stat-val" id="stat-moves">0</span>
-      </div>
-      <div class="stat-pill">
-        <span class="stat-name">Time</span>
-        <span class="stat-val" id="stat-time">00:00</span>
-      </div>
-      <div class="stat-pill">
-        <span class="stat-name">Max Tile</span>
-        <span class="stat-val" id="stat-max-tile">0</span>
-      </div>
-      <div class="stat-pill hint-pill" id="hint-banner" hidden>
-        <span class="stat-name">Suggested</span>
-        <span class="stat-val" id="hint-text">—</span>
-      </div>
-    </section>
-
-    <!-- Game Board -->
-    <main class="game-container" id="game-container" aria-label="2048 Game Board">
-      <!-- Game Over / Win Overlay -->
-      <div class="game-message" id="game-message" role="dialog" aria-live="polite">
-        <p id="message-text"></p>
-        <div class="message-sub" id="message-sub"></div>
-        <div class="message-actions">
-          <button id="keep-playing-btn" class="btn btn-secondary">Keep going</button>
-          <button id="try-again-btn" class="btn btn-primary">Try again</button>
-        </div>
-      </div>
-
-      <!-- Dynamic Background Grid -->
-      <div class="grid-container" id="grid-container"></div>
-
-      <!-- Active Tiles Layer -->
-      <div class="tile-container" id="tile-container"></div>
-    </main>
-
-    <footer class="game-explanation">
-      <p>
-        <strong>HOW TO PLAY:</strong> Use your <strong>arrow keys</strong>, <strong>WASD</strong>, or <strong>swipe</strong> to slide tiles. Matching tiles merge into one!
-      </p>
-      <p class="shortcuts-hint">
-        Shortcuts:
-        <kbd>L</kbd> Dark/Light Mode &middot;
-        <kbd>T</kbd> Theme &middot;
-        <kbd>Z</kbd>/<kbd>U</kbd> Undo &middot;
-        <kbd>H</kbd> Hint &middot;
-        <kbd>P</kbd> Auto-Play &middot;
-        <kbd>M</kbd> Mute &middot;
-        <kbd>R</kbd> Restart
-      </p>
-    </footer>
   </div>
 
   <script src="script.js"></script>
