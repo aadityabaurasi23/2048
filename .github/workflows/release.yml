@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Version tag for the GitHub Release (e.g., v1.0.0)"
+        description: "Version tag for the GitHub Release (e.g., v2.0.1)"
         required: false
-        default: "v1.0.0"
+        default: "v2.0.1"
 
 permissions:
   contents: write
@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Determine Version Tag
         id: meta
@@ -42,7 +44,13 @@ jobs:
           elif [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
             VERSION="${{ github.event.inputs.release_tag }}"
           else
-            VERSION="v1.0.${{ github.run_number }}"
+            LATEST_V2=$(git tag -l "v2.0.*" --sort=-v:refname | head -n 1)
+            if [[ -z "$LATEST_V2" ]]; then
+              VERSION="v2.0.1"
+            else
+              PATCH="${LATEST_V2##*.}"
+              VERSION="v2.0.$((PATCH + 1))"
+            fi
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
@@ -51,7 +59,7 @@ jobs:
         run: |
           mkdir -p dist release-assets
 
-          # Copy clean web app files for GitHub Pages and zip bundle
+          # Copy clean web app files for GitHub Pages and archive bundles
           cp index.html style.css script.js README.md dist/
 
           # Build a self-contained single-file HTML app (2048-standalone.html)
@@ -94,6 +102,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Download Packaged Release Assets
         uses: actions/download-artifact@v4
@@ -105,8 +115,22 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.package-app.outputs.version }}
-          name: "2048 — Curated Edition (${{ needs.package-app.outputs.version }})"
+          name: "2048 — Curated Studio Edition (${{ needs.package-app.outputs.version }})"
           generate_release_notes: true
+          body: |
+            ## ✨ 2048 — Curated Studio Edition (`${{ needs.package-app.outputs.version }}`)
+
+            ### 🚀 Highlights in v2.0
+            - **Symmetrical 3-Column Bento Workspace:** Centered game board flanked by Live Telemetry, Power-Ups, Customization Studio, and Run Tile Progression Vault.
+            - **10 Themes × Light & Dark Modes (20 Palettes):** Added *Sakura Blossom*, *Nordic Frost*, *Mocha Espresso*, and *Minimalist Ink* alongside *Classic Warm*, *Ocean Blue*, *Cyberpunk Neon*, *Forest Emerald*, *Crimson Sunset*, and *Royal Amethyst*.
+            - **4 Playable Game Modes:** *Classic Endless*, *⏱️ 2-Min Time Blitz*, *🧘 Zen Relax*, and *🔥 Hardcore Purist*.
+            - **Tactical Power-Ups & Streaks:** *🔀 Shuffle*, *⚡ Zap Low*, milestone bonus charges, and live *🔥 Merge Streak* tracking.
+            - **Deep Visual Studio:** 4 Tile Skins (*Numbers*, *Powers 2ⁿ*, *Roman Ranks*, *Cosmic Icons*), 4 SVG Backdrops (*Spirals & Doodles*, *Star Constellations*, *Zen Topo Waves*, *Clean Gradient*), 3 Tile Shapes, 3 Motion Speeds, and celebration particles.
+            - **Player Hub:** Lifetime Analytics, Tile Forge Matrix, 10-Run Match History, 12 Unlockable Achievements, Grandmaster Strategy Guide, and JSON Save Export/Import.
+
+            ### 📦 Download Options
+            - **`2048-standalone.html`** — Single-file offline app (open directly in any browser, no extraction required).
+            - **`2048-app-${{ needs.package-app.outputs.version }}.zip` / `.tar.gz`** — Full source & web distribution archive.
           files: |
             release-assets/2048-app-${{ needs.package-app.outputs.version }}.zip
             release-assets/2048-app-${{ needs.package-app.outputs.version }}.tar.gz
