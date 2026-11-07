@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="classic" data-mode="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>2048 — Custom Edition</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="title-group">
+        <div class="title-row">
+          <h1 class="title">2048</h1>
+          <span class="grid-badge" id="grid-badge">4×4</span>
+        </div>
+        <p class="subtitle">Join the numbers and reach the <strong>2048 tile!</strong></p>
+      </div>
+
+      <div class="scores-and-actions">
+        <div class="scores-container">
+          <div class="score-box">
+            <span class="score-label">SCORE</span>
+            <span class="score-value" id="score">0</span>
+            <div class="score-addition" id="score-addition"></div>
+          </div>
+          <div class="score-box">
+            <span class="score-label">BEST</span>
+            <span class="score-value" id="best-score">0</span>
+          </div>
+        </div>
+        <div class="controls-row">
+          <button id="mode-btn" class="btn btn-secondary" title="Toggle Dark / Light Mode (L)">
+            🌙 Dark Mode
+          </button>
+          <button id="undo-btn" class="btn btn-secondary" disabled title="Undo last move (Z or U)">
+            Undo
+          </button>
+          <button id="hint-btn" class="btn btn-secondary" title="Suggest best move (H)">
+            Hint
+          </button>
+          <button id="restart-btn" class="btn btn-primary" title="Start a new game (R)">
+            New Game
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Customization & Feature Toolbar -->
+    <section class="toolbar" aria-label="Game Customizations">
+      <div class="toolbar-row">
+        <div class="toolbar-group">
+          <label class="toolbar-label" for="theme-select">Theme</label>
+          <select id="theme-select" class="toolbar-select" title="Select Color Theme (T to cycle)">
+            <option value="classic">Classic Warm</option>
+            <option value="ocean">Ocean Blue</option>
+            <option value="cyberpunk">Cyberpunk Neon</option>
+            <option value="emerald">Forest Emerald</option>
+            <option value="sunset">Crimson Sunset</option>
+            <option value="royal">Royal Amethyst</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <label class="toolbar-label" for="size-select">Grid</label>
+          <select id="size-select" class="toolbar-select" title="Select Board Size">
+            <option value="3">3×3 Mini</option>
+            <option value="4" selected>4×4 Classic</option>
+            <option value="5">5×5 Big</option>
+            <option value="6">6×6 Giant</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <label class="toolbar-label" for="speed-select">Anim</label>
+          <select id="speed-select" class="toolbar-select" title="Tile Animation Speed">
+            <option value="fast">Fast</option>
+            <option value="normal" selected>Normal</option>
+            <option value="relaxed">Relaxed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toolbar-actions">
+        <button id="ai-btn" class="btn btn-chip" title="Toggle Auto-Play AI (A)" aria-pressed="false">
+          🤖 Auto-Play
+        </button>
+        <button id="sound-btn" class="btn btn-chip" title="Toggle Sound Effects (M)" aria-pressed="true">
+          🔊 Sound
+        </button>
+      </div>
+    </section>
+
+    <!-- Live Game Stats Bar -->
+    <section class="stats-bar" aria-label="Live Game Statistics">
+      <div class="stat-pill">
+        <span class="stat-name">Moves</span>
+        <span class="stat-val" id="stat-moves">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-name">Time</span>
+        <span class="stat-val" id="stat-time">00:00</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-name">Max Tile</span>
+        <span class="stat-val" id="stat-max-tile">0</span>
+      </div>
+      <div class="stat-pill hint-pill" id="hint-banner" hidden>
+        <span class="stat-name">Suggested</span>
+        <span class="stat-val" id="hint-text">—</span>
+      </div>
+    </section>
+
+    <!-- Game Board -->
+    <main class="game-container" id="game-container" aria-label="2048 Game Board">
+      <!-- Game Over / Win Overlay -->
+      <div class="game-message" id="game-message" role="dialog" aria-live="polite">
+        <p id="message-text"></p>
+        <div class="message-sub" id="message-sub"></div>
+        <div class="message-actions">
+          <button id="keep-playing-btn" class="btn btn-secondary">Keep going</button>
+          <button id="try-again-btn" class="btn btn-primary">Try again</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Background Grid -->
+      <div class="grid-container" id="grid-container"></div>
+
+      <!-- Active Tiles Layer -->
+      <div class="tile-container" id="tile-container"></div>
+    </main>
+
+    <footer class="game-explanation">
+      <p>
+        <strong>HOW TO PLAY:</strong> Use your <strong>arrow keys</strong>, <strong>WASD</strong>, or <strong>swipe</strong> to slide tiles. Matching tiles merge into one!
+      </p>
+      <p class="shortcuts-hint">
+        Shortcuts:
+        <kbd>L</kbd> Dark/Light Mode &middot;
+        <kbd>T</kbd> Theme &middot;
+        <kbd>Z</kbd>/<kbd>U</kbd> Undo &middot;
+        <kbd>H</kbd> Hint &middot;
+        <kbd>P</kbd> Auto-Play &middot;
+        <kbd>M</kbd> Mute &middot;
+        <kbd>R</kbd> Restart
+      </p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
