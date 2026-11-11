@@ -945,6 +945,54 @@
       return getSnapshot();
     },
 
+    restoreState(savedObj) {
+      if (!savedObj || typeof savedObj !== "object") return;
+      if (
+        savedObj.wallpaperId &&
+        WALLPAPER_CATALOG.some((w) => w.id === savedObj.wallpaperId)
+      ) {
+        state.wallpaperId = savedObj.wallpaperId;
+      }
+      if (typeof savedObj.syncWithTheme === "boolean") {
+        state.syncWithTheme = savedObj.syncWithTheme;
+      }
+      if (typeof savedObj.animated === "boolean") {
+        state.animated = savedObj.animated;
+      }
+      if (typeof savedObj.speed === "number") {
+        state.speed = Math.min(2.0, Math.max(0.25, Number(savedObj.speed.toFixed(2))));
+      }
+      if (["subtle", "balanced", "lush"].includes(savedObj.density)) {
+        state.density = savedObj.density;
+      }
+      if (typeof savedObj.interactiveRipples === "boolean") {
+        state.interactiveRipples = savedObj.interactiveRipples;
+      }
+      if (Array.isArray(savedObj.wallpapersTried) && savedObj.wallpapersTried.length > 0) {
+        state.wallpapersTried = Array.from(
+          new Set(
+            savedObj.wallpapersTried.filter((id) =>
+              WALLPAPER_CATALOG.some((w) => w.id === id)
+            )
+          )
+        );
+      }
+
+      document.documentElement.setAttribute("data-wallpaper", state.wallpaperId);
+      saveWallpaperState();
+      rebuildEntities();
+
+      if (state.wallpaperId === "minimal") {
+        stopLoop();
+        if (ctx) ctx.clearRect(0, 0, width, height);
+      } else {
+        startLoop();
+        if (!state.animated) renderFrame(performance.now());
+      }
+
+      notifyListeners({ source: "restore" });
+    },
+
     subscribe(fn) {
       listeners.add(fn);
       return () => listeners.delete(fn);

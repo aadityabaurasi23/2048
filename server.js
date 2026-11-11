@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": MIME_TYPES[".json"] });
     res.end(
       JSON.stringify({
-        version: "2.3.0",
+        version: "2.4.0",
         status: "ok",
         pairings: THEME_WALLPAPER_MAP,
       })
@@ -70,5 +70,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`2048 Curated Studio Server (v2.3.0) running at http://localhost:${PORT}`);
+  console.log(`2048 Curated Studio Server (v2.4.0) running at http://localhost:${PORT}`);
 });

@@ -1,7 +1,7 @@
 {
   "name": "2048-curated-studio-edition",
-  "version": "2.3.0",
-  "description": "2048 Curated Studio Edition — Puzzle stage with interactive 60 FPS theme-connected Live Wallpapers, AngularJS Studio & Node.js tooling.",
+  "version": "2.4.0",
+  "description": "2048 Curated Studio Edition — Puzzle stage with Daily Seeded Challenge, Scorecard PNG Generator, 60 FPS Live Wallpapers, AngularJS Studio & Node.js tooling.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

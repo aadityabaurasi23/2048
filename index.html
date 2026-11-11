@@ -82,6 +82,9 @@
         <button id="zap-btn" class="btn btn-secondary" title="Zap a lowest-value tile (C)">
           ⚡ <span class="charge-dot" id="zap-count">1</span>
         </button>
+        <button id="upgrade-btn" class="btn btn-secondary" title="Upgrade a lowest-value tile to double its rank (E)">
+          🔨 <span class="charge-dot" id="upgrade-count">1</span>
+        </button>
         <button id="ai-btn" class="btn btn-secondary" title="Toggle Auto-Play AI (P)" aria-pressed="false">
           🤖 AI
         </button>
@@ -113,6 +116,7 @@
         <div class="message-actions">
           <button id="keep-playing-btn" class="btn btn-secondary">Keep going</button>
           <button id="overlay-undo-btn" class="btn btn-secondary" hidden>↶ Undo Last</button>
+          <button id="share-scorecard-btn" class="btn btn-secondary">📸 Scorecard</button>
           <button id="try-again-btn" class="btn btn-primary">↻ Play Again</button>
         </div>
       </div>
@@ -158,7 +162,7 @@
     <button class="side-tab-btn" data-drawer-tab="badges" title="Achievements & Milestones (B)">
       <span class="side-tab-icon">🏆</span>
       <span class="side-tab-label">Achievements</span>
-      <span class="side-tab-badge" id="achievement-summary">0/14</span>
+      <span class="side-tab-badge" id="achievement-summary">0/16</span>
       <span class="side-tab-dot" id="badge-notify-dot" hidden></span>
     </button>
 
@@ -214,7 +218,7 @@
             <div class="ach-progress-fill" id="ach-progress-fill" style="width: 0%"></div>
           </div>
           <div class="ach-filter-row">
-            <button class="filter-chip active" data-ach-filter="all">All (14)</button>
+            <button class="filter-chip active" data-ach-filter="all">All (16)</button>
             <button class="filter-chip" data-ach-filter="unlocked">Unlocked</button>
             <button class="filter-chip" data-ach-filter="locked">Locked</button>
           </div>
@@ -349,6 +353,7 @@
             <label class="setting-label" for="gamemode-select">Game Mode</label>
             <select id="gamemode-select" class="setting-select">
               <option value="classic" selected>Classic Endless</option>
+              <option value="daily">📅 Daily Challenge (Seeded)</option>
               <option value="blitz">⏱️ 2-Min Time Blitz</option>
               <option value="zen">🧘 Zen Relax (No Lockout)</option>
               <option value="hardcore">🔥 Hardcore Purist</option>
@@ -449,6 +454,7 @@
         </div>
 
         <div class="data-actions-col">
+          <button id="export-scorecard-btn" type="button" class="btn btn-primary btn-sm">📸 Save Run Scorecard (PNG)</button>
           <div class="setting-row-2">
             <button id="export-data-btn" class="btn btn-secondary btn-sm">⬇ Export JSON</button>
             <button id="import-data-btn" class="btn btn-secondary btn-sm">⬆ Import JSON</button>
@@ -472,7 +478,7 @@
 
         <div class="guide-stack">
           <div class="guide-box">
-            <h3>About 2048 — Studio Edition (v2.3.0)</h3>
+            <h3>About 2048 — Studio Edition (v2.4.0)</h3>
             <p>
               Slide tiles across the grid using arrow keys, WASD, or touch swipes. Matching tiles fuse into the next power of two (<code>2¹ → 2¹¹</code>), emitting ambient shockwaves onto your theme-connected 60 FPS Live Wallpaper.
             </p>
@@ -483,7 +489,7 @@
             <ol>
               <li><strong>Corner Anchor:</strong> Lock your largest tile in one corner and keep its edge row filled.</li>
               <li><strong>Snake Chain:</strong> Build descending ranks in a serpentine line so merges cascade smoothly.</li>
-              <li><strong>Smart Power-Ups:</strong> Save <code>🔀 Shuffle</code> and <code>⚡ Zap</code> for endgame gridlock; forging <code>512+</code> awards bonus charges!</li>
+              <li><strong>Smart Power-Ups:</strong> Save <code>🔀 Shuffle</code>, <code>⚡ Zap</code>, and <code>🔨 Upgrade</code> for endgame gridlock; forging <code>512+</code> awards bonus charges!</li>
             </ol>
           </div>
 
@@ -497,7 +503,7 @@
               <div><kbd>B</kbd> / <kbd>G</kbd> / <kbd>?</kbd> <span>Badges / Stats / Guide</span></div>
               <div><kbd>Z</kbd> / <kbd>U</kbd> <span>Undo Last Move</span></div>
               <div><kbd>H</kbd> / <kbd>P</kbd> <span>Hint / Auto-Play AI</span></div>
-              <div><kbd>X</kbd> / <kbd>C</kbd> <span>Shuffle / Zap Tile</span></div>
+              <div><kbd>X</kbd> / <kbd>C</kbd> / <kbd>E</kbd> <span>Shuffle / Zap / Upgrade</span></div>
               <div><kbd>F</kbd> / <kbd>M</kbd> / <kbd>R</kbd> <span>Fullscreen / Mute / New</span></div>
             </div>
           </div>
@@ -515,7 +521,7 @@
        ======================================================================== -->
   <div class="welcome-overlay" id="welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="welcome-title" hidden>
     <div class="welcome-card">
-      <div class="welcome-edition-pill">✨ Curated Studio Edition · v2.3.0</div>
+      <div class="welcome-edition-pill">✨ Curated Studio Edition · v2.4.0</div>
 
       <div class="welcome-crest" aria-hidden="true">
         <span class="crest-tile ct-2">2</span>
@@ -559,9 +565,9 @@
       </div>
 
       <div class="welcome-features">
-        <span class="welcome-feat-chip">⌨️ Arrows · WASD · Swipe</span>
+        <span class="welcome-feat-chip">📅 Daily Seeded Challenge</span>
         <span class="welcome-feat-chip">🖼️ 10 Live Wallpapers</span>
-        <span class="welcome-feat-chip">🏆 14 Achievements</span>
+        <span class="welcome-feat-chip">🏆 16 Achievements</span>
       </div>
 
       <button type="button" class="btn-lets-start" id="welcome-start-btn">

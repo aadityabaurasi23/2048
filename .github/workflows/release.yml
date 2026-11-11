@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Version tag for the GitHub Release (e.g., v2.3.0)"
+        description: "Version tag for the GitHub Release (e.g., v2.4.0)"
         required: false
-        default: "v2.3.0"
+        default: "v2.4.0"
 
 permissions:
   contents: write
@@ -47,12 +47,12 @@ jobs:
           elif [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
             VERSION="${{ github.event.inputs.release_tag }}"
           else
-            LATEST_V23=$(git tag -l "v2.3.*" --sort=-v:refname | head -n 1)
-            if [[ -z "$LATEST_V23" ]]; then
-              VERSION="v2.3.0"
+            LATEST_V24=$(git tag -l "v2.4.*" --sort=-v:refname | head -n 1)
+            if [[ -z "$LATEST_V24" ]]; then
+              VERSION="v2.4.0"
             else
-              PATCH="${LATEST_V23##*.}"
-              VERSION="v2.3.$((PATCH + 1))"
+              PATCH="${LATEST_V24##*.}"
+              VERSION="v2.4.$((PATCH + 1))"
             fi
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
@@ -103,14 +103,20 @@ jobs:
           body: |
             ## ✨ 2048 — Curated Studio Edition (`${{ needs.package-app.outputs.version }}`)
 
-            ### 🌟 What's New in `v2.3.0` — 24K Gold Classic Dark Mode & First-Run Translucent Welcome Showcase
-            - **Obsidian & 24K Imperial Gold Dark Mode for Classic Warm:** Redesigned *Classic Warm — Dark Mode* (both board/tiles and the live *Warm Spiral Doodles* wallpaper) into a warm gilded **Obsidian, Antique Bronze & 24K Imperial Gold** palette so it feels authentically connected to Classic 2048 and completely distinct from *Ocean Blue*.
-            - **First-Run Translucent Welcome Showcase (`▶ Let's Start`):** New players are greeted by a frosted-glass welcome card suspended over the live animated game board and 60 FPS wallpaper, featuring a floating `2·0·4·8` crest, live starter-vibe & Dark/Light preview controls, and a shimmering **`▶ Let's Start`** button (`Enter` / `Space` supported).
-            - **Permanent Forever-Once Persistence:** Stores completion in **both** a long-lived browser cookie (`Expires=2099`) and `localStorage`, ensuring the welcome screen never interrupts returning players again unless browser cookies or cache/site-data are cleared (with an optional *View Welcome Showcase Screen* button in `📖 Guide`).
+            ### 🌟 What's New in `v2.4.0` — Daily Seeded Challenge, Upgrade Power-Up, Scorecard PNG Generator & Bug Fixes
+            - **📅 Daily Seeded Challenge Mode (`daily`):** Added a 5th game mode powered by a deterministic Mulberry32 PRNG seeded with the current date (`YYYY-MM-DD`). Every player on the same day gets the exact same starting board and tile spawn sequence!
+            - **🔨 Tile Upgrade Power-Up (`#upgrade-btn` / `E`):** Added a 3rd tactical power-up that doubles the rank of a lowest-value tile on the board (`2 → 4`, `4 → 8`, etc.) with celebration particles, Live Wallpaper shockwaves, and bonus charges on `512`/`1024`/`2048`/`4096` milestones.
+            - **📸 One-Click Scorecard PNG Poster & Clipboard Summary:** Export a high-DPI (`1280×1640`) themed PNG scorecard displaying your score, best score, max tile, moves/time, and a rendered snapshot of your 2048 board directly from the Game Over/Win overlay or the `📊 Analytics` drawer.
+            - **🏆 Expanded to 16 Achievements:** Added **📅 Daily Challenger** (*Score 2,500+ in Daily Challenge mode*) and **🔨 Tile Alchemist** (*Use the Upgrade power-up to evolve a tile*).
+            - **🛠️ Quality & Bug Fixes:**
+              - **JSON Backup Wallpaper Restore Fix:** Importing a backup JSON now restores your saved Live Wallpaper state, speed, density, ripple settings, and `wallpapersTried` history via `LiveWallpaperEngine.restoreState()`.
+              - **Smart Anti-Deadlock Shuffle & History Fix:** `🔀 Shuffle` now searches up to 12 board permutations to find a playable arrangement with valid moves; if no valid moves exist on the board, it properly logs the finished run to Match History.
+              - **True Lock-Free Zen Mode:** When all cells fill up with no adjacent matches in `🧘 Zen Mode`, the engine automatically vaporizes a lowest-value tile with a particle burst so gameplay and Auto-Play AI never soft-lock.
+              - **Blitz & Session Clock Auto-Pause:** The timer now pauses automatically whenever the Welcome Showcase is open or the browser tab is hidden (`document.hidden`).
 
             ### 🚀 Core Studio Highlights
-            - **10 Themes × Connected 60 FPS Live Wallpapers (20 Palettes):** Two-way Theme ↔ Wallpaper sync (*Forest Emerald* ↔ *🌿 Green Doodle Grove*, *Classic Warm* ↔ *🌀 Warm Spiral Doodles*, *Sakura Blossom* ↔ *🌸 Sakura Petal Drift*, etc.) plus **Mix & Match Mode** inside the AngularJS Wallpaper Studio.
-            - **Curated Minimalist Stage & 5 Side Tabs:** *🏆 Achievements (14)*, *🖼️ Wallpaper*, *⚙️ Settings*, *📊 Analytics & Vault*, and *📖 Strategy Guide*.
+            - **10 Themes × Connected 60 FPS Live Wallpapers (20 Palettes):** Including the *Obsidian & 24K Imperial Gold* dark palette for *Classic Warm* and two-way Theme ↔ Wallpaper sync inside the AngularJS Wallpaper Studio.
+            - **First-Run Translucent Welcome Showcase (`▶ Let's Start`):** Forever-once persistence in both a 2099 browser cookie and `localStorage`.
             - **Node.js Server & Offline Standalone Build:** Strict release-only CI pipeline (zero deployment jobs).
 
             ### 📦 Download Options
